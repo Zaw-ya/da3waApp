@@ -121,7 +121,7 @@ namespace Da3wa.WebUI.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
 
                     var user = await _userManager.FindByEmailAsync(Input.Email);
-                    if (user != null && await _userManager.IsInRoleAsync(user, AppRoles.Administrator))
+                    if (user != null && !await _userManager.IsInRoleAsync(user, AppRoles.Client))
                     {
                         return RedirectToAction("Dashboard", "Home");
                     }

@@ -10,7 +10,7 @@ namespace Da3wa.WebUI.Controllers
     {
         public IActionResult Index()
         {
-            if (User.IsInRole(AppRoles.Administrator))
+            if (User.Identity!.IsAuthenticated && !User.IsInRole(AppRoles.Client))
             {
                 return RedirectToAction("Dashboard");
             }
@@ -23,9 +23,14 @@ namespace Da3wa.WebUI.Controllers
             return View();
         }
 
-        [Authorize(Roles = AppRoles.Administrator)]
+        [Authorize]
         public IActionResult Dashboard()
         {
+            if (User.IsInRole(AppRoles.Client))
+            {
+                return Forbid();
+            }
+
             return View();
         }
 
