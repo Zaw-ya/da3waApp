@@ -10,6 +10,11 @@ namespace Da3wa.WebUI.Controllers
     {
         public IActionResult Index()
         {
+            if (User.IsInRole(AppRoles.Administrator))
+            {
+                return RedirectToAction("Dashboard");
+            }
+
             return View();
         }
 
