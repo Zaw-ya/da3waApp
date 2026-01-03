@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Da3wa.Application/Da3wa.Application.csproj" />
+  <Project Path="Da3wa.Domain/Da3wa.Domain.csproj" />
+  <Project Path="Da3wa.Infrastructure/Da3wa.Infrastructure.csproj" />
+  <Project Path="Da3wa.WebUI/Da3wa.WebUI.csproj" />
+</Solution>

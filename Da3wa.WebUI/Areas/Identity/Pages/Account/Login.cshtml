@@ -1,0 +1,252 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="login-page bg-light-section">
+    <div class="container py-5">
+        <div class="row justify-content-center align-items-center min-vh-80">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                        <!-- Left Side - Login Form -->
+                        <div class="col-lg-6 p-5">
+                            <div class="text-center mb-4">
+                                <a class="navbar-brand mb-3" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="fas fa-calendar-alt"></i> Event<span>Pro</span>
+                                </a>
+                                <h2 class="fw-bold text-primary">Welcome Back</h2>
+                                <p class="text-muted">Sign in to manage your events</p>
+                            </div>
+
+                            <form id="account" method="post">
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Input.Email" class="form-label fw-semibold">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-envelope text-muted"></i>
+                                        </span>
+                                        <input asp-for="Input.Email" class="form-control py-3 border-start-0"
+                                               autocomplete="username" aria-required="true"
+                                               placeholder="Enter your email">
+                                    </div>
+                                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Input.Password" class="form-label fw-semibold">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="fas fa-lock text-muted"></i>
+                                        </span>
+                                        <input asp-for="Input.Password" class="form-control py-3 border-start-0"
+                                               autocomplete="current-password" aria-required="true"
+                                               placeholder="Enter your password" id="passwordInput">
+                                        <span class="input-group-text bg-light border-start-0 cursor-pointer"
+                                              onclick="togglePassword()">
+                                            <i class="fas fa-eye text-muted" id="passwordIcon"></i>
+                                        </span>
+                                    </div>
+                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" asp-for="Input.RememberMe" id="rememberMe">
+                                        <label class="form-check-label text-muted" for="rememberMe">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <a id="forgot-password" asp-page="./ForgotPassword" class="text-decoration-none text-primary">
+                                        Forgot password?
+                                    </a>
+                                </div>
+
+                                <button id="login-submit" type="submit" class="btn btn-gradient w-100 py-3 mb-3 fw-semibold">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                </button>
+
+                                <div class="text-center mb-4">
+                                    <span class="text-muted">Don't have an account?</span>
+                                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                                       class="text-decoration-none fw-semibold text-primary ms-1">
+                                        Create Account
+                                    </a>
+                                </div>
+
+                                <div class="text-center">
+                                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation"
+                                       class="text-decoration-none text-muted small">
+                                        <i class="fas fa-envelope me-1"></i>Resend email confirmation
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Right Side - Image & Social Login -->
+                        <div class="col-lg-6 bg-coffee d-none d-lg-flex flex-column justify-content-center p-5 text-white">
+                            <div class="text-center mb-5">
+                                <h3 class="fw-bold mb-3">Simplify Your Event Planning</h3>
+                                <p class="opacity-75">Join thousands of event organizers who trust EventPro for seamless event management.</p>
+                            </div>
+
+                            <div class="features-list mb-5">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>QR Code Invitations</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>Real-time Guest Tracking</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>Customizable Templates</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>Automated Reminders</span>
+                                </div>
+                            </div>
+
+                            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                            {
+                                <div class="social-login">
+                                    <div class="text-center mb-3">
+                                        <span class="opacity-75">Or sign in with</span>
+                                    </div>
+                                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                        <div class="row g-2">
+                                            @foreach (var provider in Model.ExternalLogins!)
+                                            {
+                                                <div class="col-6">
+                                                    <button type="submit" class="btn btn-outline-light w-100" name="provider" value="@provider.Name">
+                                                        <i class="fab fa-@provider.DisplayName.ToLower() me-2"></i>@provider.DisplayName
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center opacity-75">
+                                    <p>Enterprise solutions available for corporate clients.</p>
+                                    <a href="#contact" class="btn btn-outline-light btn-sm mt-2">Contact Sales</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .min-vh-80 {
+        min-height: 80vh;
+    }
+
+    .login-page {
+        padding-top: 100px;
+        padding-bottom: 60px;
+    }
+
+    .card {
+        border: none;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(139, 115, 85, 0.25);
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: var(--primary-color);
+        background-color: rgba(139, 115, 85, 0.05);
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .features-list .bg-white {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-outline-light:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: white;
+    }
+
+    .social-login .btn {
+        transition: all 0.3s ease;
+    }
+
+        .social-login .btn:hover {
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 992px) {
+        .login-page {
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .login-page {
+            padding-top: 60px;
+            padding-bottom: 30px;
+        }
+
+        .p-5 {
+            padding: 2rem !important;
+        }
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordIcon = document.getElementById('passwordIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+}
