@@ -1,0 +1,969 @@
+﻿@page
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <a class="navbar-brand mb-0" href="#">
+                    <i class="fas fa-calendar-alt"></i> <span class="brand-text">EventPro</span>
+                </a>
+                <button class="btn btn-link text-dark d-lg-none" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="user-profile mt-4">
+                <div class="d-flex align-items-center">
+                    <div class="avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-info ms-3">
+                        <h6 class="mb-0">John Doe</h6>
+                        <small class="text-muted">Admin</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-calendar-check"></i>
+                        <span class="menu-text">Events</span>
+                        <span class="badge bg-primary float-end">5</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-users"></i>
+                        <span class="menu-text">Guests</span>
+                        <span class="badge bg-success float-end">128</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-qrcode"></i>
+                        <span class="menu-text">QR Codes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-envelope"></i>
+                        <span class="menu-text">Invitations</span>
+                        <span class="badge bg-warning float-end">12</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="menu-text">Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-palette"></i>
+                        <span class="menu-text">Templates</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-cog"></i>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Bottom Menu -->
+            <div class="sidebar-bottom">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-question-circle"></i>
+                            <span class="menu-text">Help & Support</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="menu-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <div class="sidebar-toggle">
+            <button class="btn btn-link" id="sidebarToggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Navbar -->
+        <nav class="top-navbar navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="btn btn-link d-lg-none" id="mobileSidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger rounded-circle">3</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <h6 class="dropdown-header">Notifications</h6>
+                            <a class="dropdown-item" href="#">
+                                <div class="d-flex">
+                                    <div class="notification-icon bg-primary">
+                                        <i class="fas fa-calendar-plus"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0">New event created</p>
+                                        <small class="text-muted">2 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <div class="d-flex">
+                                    <div class="notification-icon bg-success">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0">5 new RSVPs</p>
+                                        <small class="text-muted">1 hour ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <div class="d-flex">
+                                    <div class="notification-icon bg-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0">Event tomorrow</p>
+                                        <small class="text-muted">5 hours ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-center" href="#">View all notifications</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="avatar-sm me-2">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <span>John Doe</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user me-2"></i>Profile
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div class="container-fluid py-4">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">Dashboard</h4>
+                            <p class="text-muted mb-0">Welcome to your event management dashboard</p>
+                        </div>
+                        <button class="btn btn-gradient">
+                            <i class="fas fa-plus me-2"></i>Create Event
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Total Events</h6>
+                                    <h3 class="mb-0">24</h3>
+                                </div>
+                                <div class="stat-icon bg-primary">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                            <p class="text-success mb-0"><small>+3 this month</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Total Guests</h6>
+                                    <h3 class="mb-0">1,245</h3>
+                                </div>
+                                <div class="stat-icon bg-success">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <p class="text-success mb-0"><small>+128 this week</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">Pending RSVPs</h6>
+                                    <h3 class="mb-0">42</h3>
+                                </div>
+                                <div class="stat-icon bg-warning">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <p class="text-danger mb-0"><small>Need follow up</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-2">QR Scans</h6>
+                                    <h3 class="mb-0">892</h3>
+                                </div>
+                                <div class="stat-icon bg-info">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                            </div>
+                            <p class="text-success mb-0"><small>+45 today</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Events & Activity -->
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Events</h5>
+                            <a href="#" class="text-primary">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Event Name</th>
+                                            <th>Date</th>
+                                            <th>Guests</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="event-icon me-3">
+                                                        <i class="fas fa-ring"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">Sarah & Mike Wedding</h6>
+                                                        <small class="text-muted">Wedding</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>May 15, 2024</td>
+                                            <td>250/300</td>
+                                            <td><span class="badge bg-success">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="event-icon me-3">
+                                                        <i class="fas fa-briefcase"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">Annual Conference</h6>
+                                                        <small class="text-muted">Corporate</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Apr 20, 2024</td>
+                                            <td>180/200</td>
+                                            <td><span class="badge bg-success">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="event-icon me-3">
+                                                        <i class="fas fa-birthday-cake"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">John's Birthday</h6>
+                                                        <small class="text-muted">Birthday</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Apr 10, 2024</td>
+                                            <td>50/60</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="event-icon me-3">
+                                                        <i class="fas fa-heart"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">Engagement Party</h6>
+                                                        <small class="text-muted">Engagement</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Mar 28, 2024</td>
+                                            <td>120/150</td>
+                                            <td><span class="badge bg-secondary">Completed</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Recent Activity</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-timeline">
+                                <div class="activity-item">
+                                    <div class="activity-icon bg-primary">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h6>New guest registered</h6>
+                                        <p class="text-muted mb-0">John Smith registered for Sarah's Wedding</p>
+                                        <small class="text-muted">10 minutes ago</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon bg-success">
+                                        <i class="fas fa-qrcode"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h6>QR Code scanned</h6>
+                                        <p class="text-muted mb-0">QR code scanned 15 times today</p>
+                                        <small class="text-muted">1 hour ago</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon bg-info">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h6>Invitation sent</h6>
+                                        <p class="text-muted mb-0">50 invitations sent for Annual Conference</p>
+                                        <small class="text-muted">3 hours ago</small>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon bg-warning">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h6>Event reminder</h6>
+                                        <p class="text-muted mb-0">John's Birthday is in 2 days</p>
+                                        <small class="text-muted">5 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Upcoming Events</h5>
+                            <a href="#" class="text-primary">View Calendar</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="upcoming-event-card">
+                                        <div class="event-date bg-primary text-white">
+                                            <div class="day">15</div>
+                                            <div class="month">MAY</div>
+                                        </div>
+                                        <div class="event-details">
+                                            <h6>Sarah & Mike Wedding</h6>
+                                            <p class="text-muted mb-2"><i class="fas fa-clock me-2"></i>2:00 PM</p>
+                                            <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>Grand Hotel</p>
+                                        </div>
+                                        <div class="event-status">
+                                            <span class="badge bg-success">Confirmed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="upcoming-event-card">
+                                        <div class="event-date bg-success text-white">
+                                            <div class="day">20</div>
+                                            <div class="month">APR</div>
+                                        </div>
+                                        <div class="event-details">
+                                            <h6>Annual Conference</h6>
+                                            <p class="text-muted mb-2"><i class="fas fa-clock me-2"></i>9:00 AM</p>
+                                            <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>Convention Center</p>
+                                        </div>
+                                        <div class="event-status">
+                                            <span class="badge bg-warning">Pending</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="upcoming-event-card">
+                                        <div class="event-date bg-info text-white">
+                                            <div class="day">10</div>
+                                            <div class="month">APR</div>
+                                        </div>
+                                        <div class="event-details">
+                                            <h6>John's Birthday Party</h6>
+                                            <p class="text-muted mb-2"><i class="fas fa-clock me-2"></i>7:00 PM</p>
+                                            <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>Private Residence</p>
+                                        </div>
+                                        <div class="event-status">
+                                            <span class="badge bg-success">Confirmed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #8B7355;
+        --secondary-color: #D2B48C;
+        --accent-color: #A0522D;
+        --light-color: #FAF3E0;
+        --dark-color: #5D4037;
+        --sidebar-width: 250px;
+        --sidebar-collapsed-width: 70px;
+        --top-navbar-height: 70px;
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    /* Dashboard Wrapper */
+    .dashboard-wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: var(--sidebar-width);
+        background: white;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+        position: fixed;
+        height: 100vh;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+    .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color) !important;
+        display: flex;
+        align-items: center;
+    }
+
+        .navbar-brand i {
+            margin-right: 8px;
+            font-size: 1.3rem;
+        }
+
+    .sidebar.collapsed .brand-text {
+        display: none;
+    }
+
+    .user-profile .avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .sidebar.collapsed .user-info {
+        display: none;
+    }
+
+    /* Sidebar Menu */
+    .sidebar-menu {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 0;
+    }
+
+        .sidebar-menu .nav-link {
+            padding: 12px 20px;
+            color: var(--dark-color);
+            border-left: 3px solid transparent;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+            .sidebar-menu .nav-link:hover,
+            .sidebar-menu .nav-link.active {
+                background-color: rgba(139, 115, 85, 0.1);
+                color: var(--primary-color);
+                border-left-color: var(--primary-color);
+            }
+
+            .sidebar-menu .nav-link i {
+                width: 24px;
+                text-align: center;
+                margin-right: 12px;
+                font-size: 1.1rem;
+            }
+
+    .sidebar.collapsed .menu-text {
+        display: none;
+    }
+
+    .sidebar.collapsed .badge {
+        display: none;
+    }
+
+    /* Sidebar Bottom */
+    .sidebar-bottom {
+        border-top: 1px solid #eee;
+        padding: 20px 0;
+    }
+
+    /* Sidebar Toggle Button */
+    .sidebar-toggle {
+        padding: 15px;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+
+        .sidebar-toggle .btn-link {
+            color: var(--dark-color);
+            text-decoration: none;
+        }
+
+    .sidebar.collapsed .sidebar-toggle .btn-link i {
+        transform: rotate(180deg);
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        transition: var(--transition);
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar.collapsed ~ .main-content {
+        margin-left: var(--sidebar-collapsed-width);
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+        height: var(--top-navbar-height);
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 0 20px;
+    }
+
+        .top-navbar .nav-link {
+            color: var(--dark-color);
+            padding: 0 15px;
+        }
+
+        .top-navbar .avatar-sm {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+    /* Cards */
+    .card {
+        border: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background: white;
+        border-bottom: 1px solid #eee;
+        padding: 20px;
+    }
+
+    .stat-card {
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .bg-primary {
+        background-color: var(--primary-color) !important;
+    }
+
+    .bg-success {
+        background-color: var(--success-color) !important;
+    }
+
+    .bg-warning {
+        background-color: #FFA500 !important;
+    }
+
+    .bg-info {
+        background-color: #17a2b8 !important;
+    }
+
+    /* Table */
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: var(--dark-color);
+        border-bottom: 2px solid #eee;
+    }
+
+    .event-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(139, 115, 85, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+    }
+
+    /* Activity Timeline */
+    .activity-item {
+        display: flex;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+        .activity-item:before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: #eee;
+        }
+
+        .activity-item:last-child:before {
+            display: none;
+        }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+        z-index: 1;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    /* Upcoming Events */
+    .upcoming-event-card {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        transition: var(--transition);
+    }
+
+        .upcoming-event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .event-date {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+        .event-date .day {
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .event-date .month {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+    .event-details {
+        flex: 1;
+    }
+
+    .event-status {
+        margin-left: 10px;
+    }
+
+    /* Notification Dropdown */
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .sidebar {
+            transform: translateX(-100%);
+            width: var(--sidebar-width);
+        }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+        .main-content {
+            margin-left: 0 !important;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-width);
+            transform: translateX(-100%);
+        }
+
+            .sidebar.collapsed.show {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed .brand-text,
+            .sidebar.collapsed .user-info,
+            .sidebar.collapsed .menu-text,
+            .sidebar.collapsed .badge {
+                display: block;
+            }
+
+        .sidebar-toggle {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .top-navbar {
+            padding: 0 10px;
+        }
+
+        .container-fluid {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Sidebar Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+
+            // Toggle sidebar on desktop
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+
+                    // Update toggle icon
+                    const icon = this.querySelector('i');
+                    if (sidebar.classList.contains('collapsed')) {
+                        icon.classList.remove('fa-chevron-left');
+                        icon.classList.add('fa-chevron-right');
+                    } else {
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-chevron-left');
+                    }
+                });
+            }
+
+            // Toggle sidebar on mobile
+            if (mobileSidebarToggle) {
+                mobileSidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.add('show');
+                });
+            }
+
+            // Close sidebar on mobile
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function() {
+                    sidebar.classList.remove('show');
+                });
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth < 992) {
+                    if (!sidebar.contains(event.target) &&
+                        !mobileSidebarToggle.contains(event.target) &&
+                        sidebar.classList.contains('show')) {
+                        sidebar.classList.remove('show');
+                    }
+                }
+            });
+
+            // Store sidebar state in localStorage
+            const storedState = localStorage.getItem('sidebarCollapsed');
+            if (storedState === 'true') {
+                sidebar.classList.add('collapsed');
+                const icon = sidebarToggle?.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-chevron-left');
+                    icon.classList.add('fa-chevron-right');
+                }
+            }
+
+            // Save state when toggled
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                });
+            }
+        });
+
+        // Initialize tooltips
+        $(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

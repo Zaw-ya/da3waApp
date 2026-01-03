@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Da3wa.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Da3wa.Domain;
 
 namespace Da3wa.WebUI.Controllers
 {
@@ -12,6 +14,12 @@ namespace Da3wa.WebUI.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = AppRoles.Administrator)]
+        public IActionResult Dashboard()
         {
             return View();
         }
