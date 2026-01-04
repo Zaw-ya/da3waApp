@@ -263,7 +263,7 @@ namespace Da3wa.WebUI.Controllers
             ViewBag.Roles = new SelectList(roles, selectedRole);
             
             var cities = await _cityService.GetAllAsync();
-            var selectedCityId = model is CreateUserDto dto2 ? dto2.CityId : null;
+            var selectedCityId = model is CreateUserDto dto2 ? (int?)dto2.CityId : null;
             ViewBag.Cities = new SelectList(cities, "Id", "CityName", selectedCityId);
         }
 

@@ -20,6 +20,8 @@ namespace Da3wa.WebUI.DependencyInjection
             {
                 options.Filters.Add<ExceptionHandlingFilter>();
                 options.Filters.Add<ControllerActionFilter>();
+                
+             
             });
             // ==============================================
             // Register DbContext

@@ -26,20 +26,25 @@ namespace Da3wa.Application.DTOs
         [Display(Name = "Last Name")]
         public string LastName { get; set; } = null!;
 
+        [Required]
         [Display(Name = "Gender")]
         public Gender? Gender { get; set; }
 
+        [Required]
         [Display(Name = "Address")]
-        public string? Address { get; set; }
+        public string Address { get; set; } = null!;
 
+        [Required]
         [Display(Name = "Primary Contact Number")]
-        public string? PrimaryContactNo { get; set; }
+        public string PrimaryContactNo { get; set; } = null!;
 
+        [Required]
         [Display(Name = "Secondary Contact Number")]
-        public string? SecondaryContactNo { get; set; }
+        public string SecondaryContactNo { get; set; } = null!;
 
+        [Required]
         [Display(Name = "City")]
-        public int? CityId { get; set; }
+        public int CityId { get; set; }
 
         [Required]
         [Display(Name = "Role")]
@@ -52,4 +57,5 @@ namespace Da3wa.Application.DTOs
         public bool Approved { get; set; } = false;
     }
 }
+
 
