@@ -7,6 +7,8 @@ namespace Da3wa.Application.Interfaces.Repositories
         IBaseRepository<ApplicationUser> ApplicationUsers { get; }
         IBaseRepository<City> Cities { get; }
         IBaseRepository<Country> Countries { get; }
+        IBaseRepository<Event> Events { get; }
+        IBaseRepository<Category> Categories { get; }
 
         int Complete();
     }

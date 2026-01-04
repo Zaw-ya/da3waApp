@@ -1,0 +1,90 @@
+@model IEnumerable<Da3wa.Domain.Entities.Event>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Events";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Events</h4>
+                <p class="text-muted mb-0">Manage events and their details</p>
+            </div>
+            <a href="@Url.Action("Create", "Event")" class="btn btn-admin">
+                <i class="fas fa-plus me-2"></i>Add Event
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Events List</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>City</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Created On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var @event in Model)
+                            {
+                                <tr>
+                                    <td>@(@event.Name ?? "N/A")</td>
+                                    <td>@(@event.Category?.Name ?? "N/A")</td>
+                                    <td>@(@event.City?.CityName ?? "N/A")</td>
+                                    <td>@(@event.Type ?? "N/A")</td>
+                                    <td>
+                                        @if (@event.IsDeleted)
+                                        {
+                                            <span class="badge bg-danger">Deleted</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                    </td>
+                                    <td>@(@event.CreatedOn.ToString("yyyy-MM-dd"))</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="@Url.Action("Edit", "Event", new { id = @event.Id })" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="@Url.Action("DeleteConfirmed", "Event")" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@(@event.Id)" />
+                                                <button type="submit" class="btn btn-sm @(@event.IsDeleted ? "btn-outline-success" : "btn-outline-warning")" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas @(@event.IsDeleted ? "fa-toggle-on" : "fa-toggle-off")"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

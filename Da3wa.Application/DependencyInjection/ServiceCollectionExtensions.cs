@@ -15,6 +15,8 @@ namespace Da3wa.Application.DependencyInjection
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IEventService, EventService>();
 
             //services.AddSingleton(configuration);
             return services;
