@@ -31,13 +31,14 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-// Add global exception handling middleware (should be early in pipeline)
+// Custom error handler for UI (re-executes at /Home/Error) - MUST be first to catch rethrown exceptions
+app.UseExceptionHandler("/Home/Error");
+
+// Global exception handling for APIs (returns JSON, rethrows for UI)
 app.UseMiddleware<Da3wa.WebUI.Middleware.GlobalExceptionHandlingMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

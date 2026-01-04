@@ -32,53 +32,55 @@ namespace Da3wa.WebUI.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred. Request Path: {Path}", context.Request.Path);
-                
-                // Only handle if response hasn't started (filter might have already handled it)
-                if (!context.Response.HasStarted)
+                _logger.LogError(ex, "An exception occurred. Request Path: {Path}", context.Request.Path);
+
+                if (IsApiRequest(context))
                 {
                     await HandleExceptionAsync(context, ex);
+                }
+                else
+                {
+                    // Rethrow for UI requests so UseExceptionHandler or UseDeveloperExceptionPage
+                    // can handle them correctly and populate IExceptionHandlerPathFeature.
+                    throw;
                 }
             }
         }
 
+        private bool IsApiRequest(HttpContext context)
+        {
+            return context.Request.Path.StartsWithSegments("/api") ||
+                   context.Request.Headers["Accept"].ToString().Contains("application/json", StringComparison.OrdinalIgnoreCase);
+        }
+
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            // Check if this is an API request
-            var isApiRequest = context.Request.Path.StartsWithSegments("/api") ||
-                              context.Request.Headers["Accept"].ToString().Contains("application/json", StringComparison.OrdinalIgnoreCase);
+            // Only handle if response hasn't started
+            if (context.Response.HasStarted) return;
 
-            if (isApiRequest)
+            // Return JSON for API requests
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            var response = new ErrorViewModel
             {
-                // Return JSON for API requests
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                RequestId = context.TraceIdentifier,
+            };
 
-                var response = new ErrorViewModel
-                {
-                    RequestId = context.TraceIdentifier,
-                };
-
-                // Add exception details in development
-                if (_environment.IsDevelopment())
-                {
-                    response.ErrorMessage = exception.Message;
-                    response.StackTrace = exception.StackTrace;
-                }
-
-                var jsonOptions = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var jsonResponse = JsonSerializer.Serialize(response, jsonOptions);
-                await context.Response.WriteAsync(jsonResponse);
-            }
-            else
+            // Add exception details in development
+            if (_environment.IsDevelopment())
             {
-                // For MVC requests, redirect to error page
-                context.Response.Redirect("/Home/Error");
+                response.ErrorMessage = exception.Message;
+                response.StackTrace = exception.StackTrace;
             }
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            var jsonResponse = JsonSerializer.Serialize(response, jsonOptions);
+            await context.Response.WriteAsync(jsonResponse);
         }
     }
 }

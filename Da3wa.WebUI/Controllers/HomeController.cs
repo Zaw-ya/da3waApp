@@ -37,7 +37,21 @@ namespace Da3wa.WebUI.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exceptionHandlerPathFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+            
+            var model = new ErrorViewModel 
+            { 
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
+            };
+
+            if (exceptionHandlerPathFeature != null)
+            {
+                model.ErrorMessage = exceptionHandlerPathFeature.Error.Message;
+                // Only show stack trace in development or based on policy
+                model.StackTrace = exceptionHandlerPathFeature.Error.StackTrace;
+            }
+
+            return View(model);
         }
     }
 }
