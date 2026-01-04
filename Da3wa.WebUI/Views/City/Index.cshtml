@@ -30,12 +30,20 @@
 <div class="row">
     <div class="col-12">
         <div class="admin-card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Cities List</h5>
+                <div class="ms-auto" style="min-width: 250px;">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" id="citySearch" class="form-control border-start-0 ps-0" placeholder="Search cities...">
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="cityTable">
                         <thead>
                             <tr>
                                 <th>City Name</th>
@@ -102,7 +110,12 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Add any custom JavaScript here
+            $("#citySearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#cityTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
         });
     </script>
 }
