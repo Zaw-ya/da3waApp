@@ -1,0 +1,206 @@
+@model Da3wa.Application.DTOs.UserDto
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "User Details";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">User Details</h4>
+                <p class="text-muted mb-0">View user information</p>
+            </div>
+            <a href="@Url.Action("Index", "Auth")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- User Details -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">User Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="user-avatar-lg mx-auto mb-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h4>@(Model.FullName ?? "N/A")</h4>
+                        <p class="text-muted mb-2">@Model.Email</p>
+                        @if (!string.IsNullOrEmpty(Model.Role))
+                        {
+                            <span class="badge bg-primary">@Model.Role</span>
+                        }
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">First Name</label>
+                        <p class="mb-0"><strong>@(Model.FirstName ?? "N/A")</strong></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Last Name</label>
+                        <p class="mb-0"><strong>@(Model.LastName ?? "N/A")</strong></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Gender</label>
+                        <p class="mb-0">
+                            <strong>
+                                @if (Model.Gender.HasValue)
+                                {
+                                    @(Model.Gender.Value == Da3wa.Domain.Enums.Gender.Male ? "Male" : "Female")
+                                }
+                                else
+                                {
+                                    <text>N/A</text>
+                                }
+                            </strong>
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">City</label>
+                        <p class="mb-0"><strong>@(Model.CityName ?? "N/A")</strong></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted">Address</label>
+                        <p class="mb-0"><strong>@(Model.Address ?? "N/A")</strong></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Primary Contact</label>
+                        <p class="mb-0"><strong>@(Model.PrimaryContactNo ?? "N/A")</strong></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Secondary Contact</label>
+                        <p class="mb-0"><strong>@(Model.SecondaryContactNo ?? "N/A")</strong></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Status</label>
+                        <p class="mb-0">
+                            @if (Model.IsActive == true)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Approved</label>
+                        <p class="mb-0">
+                            @if (Model.Approved == true)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Email Confirmed</label>
+                        <p class="mb-0">
+                            @if (Model.EmailConfirmed)
+                            {
+                                <span class="badge bg-success">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">No</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted">Created On</label>
+                        <p class="mb-0"><strong>@(Model.CreatedOn?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</strong></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted">Roles</label>
+                        <p class="mb-0">
+                            @if (Model.Roles != null && Model.Roles.Any())
+                            {
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <span class="badge bg-primary me-1">@role</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No roles assigned</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Edit", "Auth", new { id = Model.Id })" class="btn btn-admin">
+                        <i class="fas fa-edit me-2"></i>Edit User
+                    </a>
+                    <a href="@Url.Action("ChangePassword", "Auth", new { id = Model.Id })" class="btn btn-outline-warning">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </a>
+                    <a href="@Url.Action("Index", "Auth")" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .user-avatar-lg {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Add any custom JavaScript here
+        });
+    </script>
+}
+

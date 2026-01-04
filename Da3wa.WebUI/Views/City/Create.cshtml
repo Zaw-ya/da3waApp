@@ -1,0 +1,62 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Create City";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Create City</h4>
+                <p class="text-muted mb-0">Add a new city to the system</p>
+            </div>
+            <a href="@Url.Action("Index", "City")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Create Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">City Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label for="CityName" class="form-label">City Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="CityName" name="CityName" required>
+                        @Html.ValidationMessage("CityName", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="CountryId" class="form-label">Country</label>
+                        @Html.DropDownList("CountryId", ViewData["Countries"] as SelectList, "Select Country", new { @class = "form-control" })
+                        @Html.ValidationMessage("CountryId", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-admin">
+                            <i class="fas fa-save me-2"></i>Create City
+                        </button>
+                        <a href="@Url.Action("Index", "City")" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Add any custom JavaScript here
+        });
+    </script>
+}

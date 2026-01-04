@@ -1,0 +1,169 @@
+@model Da3wa.Application.DTOs.UpdateUserDto
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Edit User";
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Edit User</h4>
+                <p class="text-muted mb-0">Update user information</p>
+            </div>
+            <a href="@Url.Action("Index", "Auth")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Form -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">User Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="@Model.Id" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required>
+                            @Html.ValidationMessage("Email", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="Role" class="form-label">Role</label>
+                            @Html.DropDownList("Role", ViewBag.Roles as SelectList, "Select Role", new { @class = "form-control" })
+                            @Html.ValidationMessage("Role", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="FirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" maxlength="20">
+                            @Html.ValidationMessage("FirstName", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="LastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" maxlength="20">
+                            @Html.ValidationMessage("LastName", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="Gender" class="form-label">Gender</label>
+                            <select class="form-control" id="Gender" name="Gender">
+                                <option value="">Select Gender</option>
+                                <option value="0" selected="@(Model.Gender == Da3wa.Domain.Enums.Gender.Male!)">Male</option>
+                                <option value="1" selected="@(Model.Gender == Da3wa.Domain.Enums.Gender.Female!)">Female</option>
+                            </select>
+                            @Html.ValidationMessage("Gender", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="CityId" class="form-label">City</label>
+                            @Html.DropDownList("CityId", ViewBag.Cities as SelectList, "Select City", new { @class = "form-control" })
+                            @Html.ValidationMessage("CityId", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Address" class="form-label">Address</label>
+                        <textarea class="form-control" id="Address" name="Address" rows="2">@Model.Address</textarea>
+                        @Html.ValidationMessage("Address", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="PrimaryContactNo" class="form-label">Primary Contact Number</label>
+                            <input type="text" class="form-control" id="PrimaryContactNo" name="PrimaryContactNo" value="@Model.PrimaryContactNo">
+                            @Html.ValidationMessage("PrimaryContactNo", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="SecondaryContactNo" class="form-label">Secondary Contact Number</label>
+                            <input type="text" class="form-control" id="SecondaryContactNo" name="SecondaryContactNo" value="@Model.SecondaryContactNo">
+                            @Html.ValidationMessage("SecondaryContactNo", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                @if (Model.IsActive == true)
+                                {
+                                    <input class="form-check-input" type="checkbox" id="IsActive" name="IsActive" checked value="true">
+                                }
+                                else
+                                {
+                                    <input class="form-check-input" type="checkbox" id="IsActive" name="IsActive" value="true">
+                                }
+                                <input type="hidden" name="IsActive" value="false">
+                                <label class="form-check-label" for="IsActive">
+                                    Is Active
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                @if (Model.Approved == true)
+                                {
+                                    <input class="form-check-input" type="checkbox" id="Approved" name="Approved" checked value="true">
+                                }
+                                else
+                                {
+                                    <input class="form-check-input" type="checkbox" id="Approved" name="Approved" value="true">
+                                }
+                                <input type="hidden" name="Approved" value="false">
+                                <label class="form-check-label" for="Approved">
+                                    Approved
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-admin">
+                            <i class="fas fa-save me-2"></i>Update User
+                        </button>
+                        <a href="@Url.Action("Index", "Auth")" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Set selected values for dropdowns
+            @if (Model.Gender.HasValue)
+            {
+                <text>
+                $('#Gender').val('@((int)Model.Gender.Value)');
+                </text>
+            }
+        });
+    </script>
+}
+

@@ -3,6 +3,7 @@ using Da3wa.Domain.DependencyInjection;
 using Da3wa.Domain.Entities;
 using Da3wa.Infrastructure.DependencyInjection;
 using Da3wa.Infrastructure.Persistence;
+using Da3wa.WebUI.Filters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Da3wa.WebUI.Services;
@@ -14,6 +15,12 @@ namespace Da3wa.WebUI.DependencyInjection
     {
         public static IServiceCollection AddWebUI(this IServiceCollection services, IConfiguration configuration)
         {
+            // Register exception handling filter globally
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<ExceptionHandlingFilter>();
+                options.Filters.Add<ControllerActionFilter>();
+            });
             // ==============================================
             // Register DbContext
             // ==============================================
@@ -48,7 +55,7 @@ namespace Da3wa.WebUI.DependencyInjection
             services.AddTransient<IEmailSender, EmailSender>();
 
             // Registers controllers, application and infrastructure services
-            services.AddControllersWithViews();
+            // Note: AddControllersWithViews is already called above with filters
             services.AddRazorPages();
 
             services.AddDomain();

@@ -31,6 +31,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+// Add global exception handling middleware (should be early in pipeline)
+app.UseMiddleware<Da3wa.WebUI.Middleware.GlobalExceptionHandlingMiddleware>();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

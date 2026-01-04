@@ -13,5 +13,8 @@ namespace Da3wa.Infrastructure.Persistence
         {
 
         }
+
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Country> Countries { get; set; }
     }
 }
