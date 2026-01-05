@@ -5,12 +5,13 @@
     ViewData["Title"] = "Guest Details";
 }
 
+<!-- Page Header -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h4 class="mb-0">Guest Details</h4>
-                <p class="text-muted mb-0">View guest information</p>
+                <p class="text-muted mb-0">View complete guest information</p>
             </div>
             <div>
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary me-2">
@@ -24,88 +25,259 @@
     </div>
 </div>
 
+<!-- Guest Information Cards -->
 <div class="row">
-    <div class="col-12">
+    <!-- Main Information Card -->
+    <div class="col-lg-8 mb-4">
         <div class="admin-card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Guest Information</h5>
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>Personal Information
+                </h5>
             </div>
             <div class="card-body">
-                <dl class="row">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Full Name</label>
+                        <h6 class="mb-0">@Model.FullName</h6>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Event</label>
+                        <h6 class="mb-0">
+                            @if (Model.Event != null)
+                            {
+                                <span class="badge bg-primary">@Model.Event.Name</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Event Assigned</span>
+                            }
+                        </h6>
+                    </div>
+                </div>
 
-                    <dt class="col-sm-3">Full Name</dt>
-                    <dd class="col-sm-9">@Model.FullName</dd>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Family Members</label>
+                        <h6 class="mb-0">
+                            <i class="fas fa-users me-2 text-primary"></i>@Model.FamilyNumber Person(s)
+                        </h6>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Attendance Status</label>
+                        <h6 class="mb-0">
+                            @if (Model.IsAttending)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Attending
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-times me-1"></i>Not Attending
+                                </span>
+                            }
+                        </h6>
+                    </div>
+                </div>
 
-                    <dt class="col-sm-3">Event</dt>
-                    <dd class="col-sm-9">@Model.Event?.Name ?? "N/A"</dd>
-
-                    <dt class="col-sm-3">Family Number</dt>
-                    <dd class="col-sm-9">@Model.FamilyNumber</dd>
-
-                    <dt class="col-sm-3">Is Attending</dt>
-                    <dd class="col-sm-9">
-                        @if (Model.IsAttending)
-                        {
-                            <span class="badge bg-success">Yes</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">No</span>
-                        }
-                    </dd>
-
-                    <dt class="col-sm-3">Phone Numbers</dt>
-                    <dd class="col-sm-9">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="text-muted small mb-2">Phone Numbers</label>
                         @if (Model.Tel != null && Model.Tel.Any())
                         {
-                            <ul class="list-unstyled mb-0">
+                            <div class="d-flex flex-wrap gap-2">
                                 @foreach (var tel in Model.Tel)
                                 {
-                                    <li><i class="fas fa-phone me-2"></i>@tel</li>
+                                    <div class="badge bg-light text-dark border p-2">
+                                        <i class="fas fa-phone text-primary me-2"></i>
+                                        <a href="tel:@tel" class="text-decoration-none text-dark">@tel</a>
+                                    </div>
                                 }
-                            </ul>
+                            </div>
                         }
                         else
                         {
-                            <span class="text-muted">No phone numbers</span>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-exclamation-circle me-2"></i>No phone numbers available
+                            </p>
                         }
-                    </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <dt class="col-sm-3">QR Token</dt>
-                    <dd class="col-sm-9">@Model.QrToken ?? "N/A"</dd>
+        <!-- QR Code Information -->
+        @if (!string.IsNullOrEmpty(Model.QrToken))
+        {
+            <div class="admin-card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-qrcode me-2"></i>QR Code Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <label class="text-muted small mb-1">QR Token</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="@Model.QrToken" readonly id="qrTokenInput">
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyQrToken()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small mb-1">Expires On</label>
+                            <p class="mb-0">
+                                <i class="fas fa-calendar-times me-2 text-danger"></i>
+                                @Model.ExpireAt.ToString("MMM dd, yyyy")
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 
-                    <dt class="col-sm-3">Expire At</dt>
-                    <dd class="col-sm-9">
-                        @(Model.ExpireAt.ToString("yyyy-MM-dd HH:mm") ?? "N/A")
-                    </dd>
-
-                    <dt class="col-sm-3">Status</dt>
-                    <dd class="col-sm-9">
+    <!-- Sidebar Information -->
+    <div class="col-lg-4 mb-4">
+        <!-- Status Card -->
+        <div class="admin-card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small mb-1">Account Status</label>
+                    <div>
                         @if (Model.IsDeleted)
                         {
-                            <span class="badge bg-danger">Deleted</span>
+                            <span class="badge bg-danger fs-6">
+                                <i class="fas fa-ban me-1"></i>Deleted
+                            </span>
                         }
                         else
                         {
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle me-1"></i>Active
+                            </span>
                         }
-                    </dd>
+                    </div>
+                </div>
 
-                    <dt class="col-sm-3">Created On</dt>
-                    <dd class="col-sm-9">
-                        @(Model.CreatedOn.ToString("yyyy-MM-dd HH:mm") ?? "N/A")
-                    </dd>
+                @if (!string.IsNullOrEmpty(Model.QrToken))
+                {
+                    <div class="mb-3">
+                        <label class="text-muted small mb-1">QR Status</label>
+                        <div>
+                            @if (Model.ExpireAt > DateTime.Now)
+                            {
+                                <span class="badge bg-success fs-6">
+                                    <i class="fas fa-check me-1"></i>Valid
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger fs-6">
+                                    <i class="fas fa-times me-1"></i>Expired
+                                </span>
+                            }
+                        </div>
+                    </div>
+                }
 
-                    @if (Model.LastUpdatedOn.HasValue)
-                    {
-                        <dt class="col-sm-3">Last Updated On</dt>
-                        <dd class="col-sm-9">
-                            @Model.LastUpdatedOn.Value.ToString("yyyy-MM-dd HH:mm")
-                        </dd>
-                    }
+                <div>
+                    <label class="text-muted small mb-1">Time Until Expiration</label>
+                    <p class="mb-0">
+                        @{
+                            var timeUntilExpire = Model.ExpireAt - DateTime.Now;
+                            if (timeUntilExpire.TotalDays > 0)
+                            {
+                                <span class="text-success">
+                                    <i class="fas fa-clock me-1"></i>@((int)timeUntilExpire.TotalDays) day(s)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Expired
+                                </span>
+                            }
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                </dl>
+        <!-- Timestamps Card -->
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Timestamps
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small mb-1">Created On</label>
+                    <p class="mb-0">
+                        <i class="fas fa-calendar-plus me-2 text-success"></i>
+                        @Model.CreatedOn.ToString("MMM dd, yyyy")
+                        <br>
+                        <small class="text-muted ms-4">@Model.CreatedOn.ToString("hh:mm tt")</small>
+                    </p>
+                </div>
+
+                @if (Model.LastUpdatedOn.HasValue)
+                {
+                    <div>
+                        <label class="text-muted small mb-1">Last Updated</label>
+                        <p class="mb-0">
+                            <i class="fas fa-calendar-edit me-2 text-primary"></i>
+                            @Model.LastUpdatedOn.Value.ToString("MMM dd, yyyy")
+                            <br>
+                            <small class="text-muted ms-4">@Model.LastUpdatedOn.Value.ToString("hh:mm tt")</small>
+                        </p>
+                    </div>
+                }
+
+                <div class="mt-3">
+                    <label class="text-muted small mb-1">Expires At</label>
+                    <p class="mb-0">
+                        <i class="fas fa-calendar-times me-2 text-danger"></i>
+                        @Model.ExpireAt.ToString("MMM dd, yyyy")
+                        <br>
+                        <small class="text-muted ms-4">@Model.ExpireAt.ToString("hh:mm tt")</small>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function copyQrToken() {
+            var copyText = document.getElementById("qrTokenInput");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+
+            // Show feedback
+            var btn = event.target.closest('button');
+            var originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            btn.classList.remove('btn-outline-secondary');
+            btn.classList.add('btn-success');
+
+            setTimeout(function() {
+                btn.innerHTML = originalHtml;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline-secondary');
+            }, 2000);
+        }
+    </script>
+}

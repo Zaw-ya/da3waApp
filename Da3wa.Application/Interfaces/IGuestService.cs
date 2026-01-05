@@ -11,5 +11,7 @@ namespace Da3wa.Application.Interfaces
         Task DeleteAsync(int id);
         Task ToggleDeleteAsync(int id);
         Task<List<Guest>> ImportFromVcfAsync(Stream vcfStream, int eventId);
+        Task<List<Guest>> ParseVcfAsync(Stream vcfStream, int eventId);
+        Task<int> CreateManyAsync(List<Guest> guests);
     }
 }

@@ -20,8 +20,17 @@ namespace Da3wa.WebUI.DependencyInjection
             {
                 options.Filters.Add<ExceptionHandlingFilter>();
                 options.Filters.Add<ControllerActionFilter>();
-                
-             
+
+
+            });
+
+            // Add session support
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
             // ==============================================
             // Register DbContext

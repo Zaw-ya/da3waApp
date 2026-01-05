@@ -1,0 +1,112 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Import Guests from VCF";
+}
+
+@if (TempData["WarningMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        @TempData["WarningMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Import Guests from VCF File</h4>
+                <p class="text-muted mb-0">Upload a VCF file to import multiple guests at once</p>
+            </div>
+            <a href="@Url.Action("Index", "Guest")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Import Form -->
+<div class="row">
+    <div class="col-lg-8 col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Upload VCF File</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-4">
+                        <label for="eventId" class="form-label">Select Event <span class="text-danger">*</span></label>
+                        <select class="form-select" id="eventId" name="eventId" required asp-items="@(ViewData["Events"] as SelectList)">
+                            <option value="">Choose an event...</option>
+                        </select>
+                        <small class="form-text text-muted">All imported guests will be assigned to this event</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="vcfFile" class="form-label">VCF File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="vcfFile" name="vcfFile" accept=".vcf" required>
+                        <small class="form-text text-muted">Upload a .vcf file containing contact information</small>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>How it works:</strong>
+                        <ol class="mb-0 mt-2">
+                            <li>Select the event for these guests</li>
+                            <li>Upload your VCF file</li>
+                            <li>Review and filter the contacts</li>
+                            <li>Confirm to save selected guests to the database</li>
+                        </ol>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="@Url.Action("Index", "Guest")" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-admin">
+                            <i class="fas fa-upload me-2"></i>Upload & Preview
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="col-lg-4 col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">About VCF Import</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">VCF (vCard) files contain contact information. This feature allows you to import multiple guests at once.</p>
+
+                <h6 class="mb-2">Supported Fields:</h6>
+                <ul class="mb-3">
+                    <li>Full Name (FN)</li>
+                    <li>Phone Numbers (TEL)</li>
+                </ul>
+
+                <h6 class="mb-2">Default Values:</h6>
+                <ul class="mb-0">
+                    <li>Family Number: 1</li>
+                    <li>Is Attending: No</li>
+                    <li>Expire Date: 30 days from now</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

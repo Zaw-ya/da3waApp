@@ -1,0 +1,272 @@
+@model List<Da3wa.Domain.Entities.Guest>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Preview Import";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Preview & Filter Contacts</h4>
+                <p class="text-muted mb-0">Review imported contacts and remove any you don't want to save</p>
+            </div>
+            <a href="@Url.Action("ImportVcf", "Guest")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Upload
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="text-muted mb-1">Total Contacts</h6>
+                        <h3 class="mb-0" id="totalCount">@Model.Count</h3>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="text-muted mb-1">Selected</h6>
+                        <h3 class="mb-0 text-success" id="selectedCount">@Model.Count</h3>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="text-muted mb-1">Excluded</h6>
+                        <h3 class="mb-0 text-danger" id="excludedCount">0</h3>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-times-circle fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter and Actions -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" id="searchInput" placeholder="Search by name or phone number...">
+        </div>
+    </div>
+    <div class="col-md-6 text-end">
+        <button type="button" class="btn btn-outline-success" id="selectAllBtn">
+            <i class="fas fa-check-double me-2"></i>Select All
+        </button>
+        <button type="button" class="btn btn-outline-danger" id="deselectAllBtn">
+            <i class="fas fa-times me-2"></i>Deselect All
+        </button>
+    </div>
+</div>
+
+<!-- Guests Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Contacts to Import</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">
+                                    <input type="checkbox" class="form-check-input" id="selectAllCheckbox" checked>
+                                </th>
+                                <th>#</th>
+                                <th>Full Name</th>
+                                <th>Phone Numbers</th>
+                                <th>Family Number</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestsTableBody">
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                var guest = Model[i];
+                                <tr class="guest-row" data-index="@i">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input guest-checkbox" checked data-index="@i">
+                                    </td>
+                                    <td>@(i + 1)</td>
+                                    <td class="guest-name">@guest.FullName</td>
+                                    <td class="guest-phones">
+                                        @if (guest.Tel != null && guest.Tel.Any())
+                                        {
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @foreach (var tel in guest.Tel)
+                                                {
+                                                    <span class="badge bg-secondary">@tel</span>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No phone numbers</span>
+                                        }
+                                    </td>
+                                    <td>@guest.FamilyNumber</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-guest" data-index="@i">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <form id="confirmForm" method="post" action="@Url.Action("ConfirmImport", "Guest")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="selectedGuestsJson" name="selectedGuestsJson" value="">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="@Url.Action("ImportVcf", "Guest")" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-success btn-lg" id="confirmImportBtn">
+                                <i class="fas fa-check me-2"></i>Import <span id="selectedCountText">@Model.Count</span> Guest(s)
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Store all guests data
+            var allGuests = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+            // Update counts
+            function updateCounts() {
+                var total = $('.guest-row').length;
+                var selected = $('.guest-checkbox:checked').length;
+                var excluded = total - selected;
+
+                $('#totalCount').text(total);
+                $('#selectedCount').text(selected);
+                $('#excludedCount').text(excluded);
+                $('#selectedCountText').text(selected);
+
+                // Update select all checkbox
+                $('#selectAllCheckbox').prop('checked', selected === total && total > 0);
+                $('#selectAllCheckbox').prop('indeterminate', selected > 0 && selected < total);
+
+                // Enable/disable confirm button
+                $('#confirmImportBtn').prop('disabled', selected === 0);
+            }
+
+            // Individual checkbox change
+            $(document).on('change', '.guest-checkbox', function() {
+                updateCounts();
+            });
+
+            // Select all checkbox
+            $('#selectAllCheckbox').change(function() {
+                var isChecked = $(this).prop('checked');
+                $('.guest-checkbox:visible').prop('checked', isChecked);
+                updateCounts();
+            });
+
+            // Select all button
+            $('#selectAllBtn').click(function() {
+                $('.guest-checkbox:visible').prop('checked', true);
+                updateCounts();
+            });
+
+            // Deselect all button
+            $('#deselectAllBtn').click(function() {
+                $('.guest-checkbox:visible').prop('checked', false);
+                updateCounts();
+            });
+
+            // Remove guest button
+            $(document).on('click', '.remove-guest', function() {
+                var index = $(this).data('index');
+                $(this).closest('tr').find('.guest-checkbox').prop('checked', false);
+                $(this).closest('tr').fadeOut(300, function() {
+                    $(this).remove();
+                    updateCounts();
+                });
+            });
+
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase();
+
+                $('.guest-row').each(function() {
+                    var name = $(this).find('.guest-name').text().toLowerCase();
+                    var phones = $(this).find('.guest-phones').text().toLowerCase();
+
+                    if (name.includes(searchTerm) || phones.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                updateCounts();
+            });
+
+            // Form submit - prepare selected guests JSON
+            $('#confirmForm').submit(function(e) {
+                var selectedGuests = [];
+
+                $('.guest-checkbox:checked').each(function() {
+                    var index = $(this).data('index');
+                    if (allGuests[index]) {
+                        selectedGuests.push(allGuests[index]);
+                    }
+                });
+
+                if (selectedGuests.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one guest to import.');
+                    return false;
+                }
+
+                $('#selectedGuestsJson').val(JSON.stringify(selectedGuests));
+            });
+
+            // Initial count update
+            updateCounts();
+        });
+    </script>
+}
