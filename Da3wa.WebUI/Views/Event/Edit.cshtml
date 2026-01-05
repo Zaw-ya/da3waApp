@@ -74,8 +74,10 @@
                                 <p class="text-muted small mb-0">Current invitation image</p>
                             </div>
                         }
-                        <input type="file" class="form-control" id="invitationImage" name="invitationImage" accept="image/*">
-                        <small class="form-text text-muted">Upload a new invitation image to replace the existing one. QR codes will be added to this image when creating guests.</small>
+                        <input type="file" class="form-control" id="invitationImage" name="invitationImage" accept=".jpg,.jpeg,.png,.webp">
+                        <span class="text-danger" id="imageValidation"></span>
+                        @Html.ValidationMessage("invitationImage", "", new { @class = "text-danger" })
+                        <small class="form-text text-muted d-block">Upload a new invitation image to replace the existing one (Max 5MB). QR codes will be added to this image when creating guests.</small>
                     </div>
 
                     <div class="d-flex gap-2">
@@ -89,3 +91,33 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#invitationImage').on('change', function () {
+                const file = this.files[0];
+                const validationSpan = $('#imageValidation');
+                validationSpan.text('');
+
+                if (file) {
+                    const fileSize = file.size / 1024 / 1024; // MB
+                    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+
+                    if (!allowedExtensions.exec(file.name)) {
+                        validationSpan.text('Invalid file type. Allowed types: .jpg, .jpeg, .png, .webp');
+                        this.value = '';
+                        return false;
+                    }
+
+                    if (fileSize > 5) {
+                        validationSpan.text('File size exceeds the limit of 5MB.');
+                        this.value = '';
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+}

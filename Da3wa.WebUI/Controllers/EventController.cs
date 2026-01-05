@@ -14,6 +14,9 @@ namespace Da3wa.WebUI.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+        private readonly string[] _allowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+        private readonly long _maxFileSize = 5 * 1024 * 1024; // 5MB
+
         public EventController(IEventService eventService, ICityService cityService, ICategoryService categoryService, IWebHostEnvironment webHostEnvironment)
         {
             _eventService = eventService;
@@ -53,26 +56,40 @@ namespace Da3wa.WebUI.Controllers
                 // Handle invitation image upload
                 if (invitationImage != null && invitationImage.Length > 0)
                 {
-                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "events");
-                    if (!Directory.Exists(uploadsFolder))
+                    if (!ValidateImage(invitationImage, out string errorMessage))
                     {
-                        Directory.CreateDirectory(uploadsFolder);
+                        ModelState.AddModelError("invitationImage", errorMessage);
                     }
-
-                    var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(invitationImage.FileName)}";
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    else
                     {
-                        await invitationImage.CopyToAsync(fileStream);
-                    }
+                        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "events");
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
 
-                    @event.ImagePath = $"/uploads/events/{uniqueFileName}";
+                        var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(invitationImage.FileName)}";
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await invitationImage.CopyToAsync(fileStream);
+                        }
+
+                        @event.ImagePath = $"/uploads/events/{uniqueFileName}";
+                    }
                 }
 
-                await _eventService.CreateAsync(@event);
-                TempData["SuccessMessage"] = "Event created successfully!";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _eventService.CreateAsync(@event);
+                    TempData["SuccessMessage"] = "Event created successfully!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while saving the event: " + ex.Message);
+                }
             }
             await PopulateDropDowns(@event);
             return View(@event);
@@ -103,36 +120,50 @@ namespace Da3wa.WebUI.Controllers
                 // Handle invitation image upload
                 if (invitationImage != null && invitationImage.Length > 0)
                 {
-                    // Delete old image if exists
-                    if (!string.IsNullOrEmpty(@event.ImagePath))
+                    if (!ValidateImage(invitationImage, out string errorMessage))
                     {
-                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, @event.ImagePath.TrimStart('/'));
-                        if (System.IO.File.Exists(oldImagePath))
+                        ModelState.AddModelError("invitationImage", errorMessage);
+                    }
+                    else
+                    {
+                        // Delete old image if exists
+                        if (!string.IsNullOrEmpty(@event.ImagePath))
                         {
-                            System.IO.File.Delete(oldImagePath);
+                            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, @event.ImagePath.TrimStart('/'));
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
                         }
+
+                        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "events");
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(invitationImage.FileName)}";
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await invitationImage.CopyToAsync(fileStream);
+                        }
+
+                        @event.ImagePath = $"/uploads/events/{uniqueFileName}";
                     }
-
-                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "events");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(invitationImage.FileName)}";
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await invitationImage.CopyToAsync(fileStream);
-                    }
-
-                    @event.ImagePath = $"/uploads/events/{uniqueFileName}";
                 }
 
-                await _eventService.UpdateAsync(@event);
-                TempData["SuccessMessage"] = "Event updated successfully!";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _eventService.UpdateAsync(@event);
+                    TempData["SuccessMessage"] = "Event updated successfully!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while updating the event: " + ex.Message);
+                }
             }
             await PopulateDropDowns(@event);
             return View(@event);
@@ -152,6 +183,26 @@ namespace Da3wa.WebUI.Controllers
             TempData["SuccessMessage"] = @event.IsDeleted ? "Event restored successfully!" : "Event deleted successfully!";
             
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool ValidateImage(IFormFile file, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            var extension = Path.GetExtension(file.FileName).ToLower();
+
+            if (!_allowedExtensions.Contains(extension))
+            {
+                errorMessage = "Invalid file type. Allowed types: " + string.Join(", ", _allowedExtensions);
+                return false;
+            }
+
+            if (file.Length > _maxFileSize)
+            {
+                errorMessage = $"File size exceeds the limit of {_maxFileSize / (1024 * 1024)}MB.";
+                return false;
+            }
+
+            return true;
         }
 
         private async Task PopulateDropDowns(Event? @event = null)
