@@ -1,0 +1,111 @@
+@model Da3wa.Domain.Entities.Guest
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Guest Details";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Guest Details</h4>
+                <p class="text-muted mb-0">View guest information</p>
+            </div>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-edit me-2"></i>Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Guest Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+
+                    <dt class="col-sm-3">Full Name</dt>
+                    <dd class="col-sm-9">@Model.FullName</dd>
+
+                    <dt class="col-sm-3">Event</dt>
+                    <dd class="col-sm-9">@Model.Event?.Name ?? "N/A"</dd>
+
+                    <dt class="col-sm-3">Family Number</dt>
+                    <dd class="col-sm-9">@Model.FamilyNumber</dd>
+
+                    <dt class="col-sm-3">Is Attending</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.IsAttending)
+                        {
+                            <span class="badge bg-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">No</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Phone Numbers</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.Tel != null && Model.Tel.Any())
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var tel in Model.Tel)
+                                {
+                                    <li><i class="fas fa-phone me-2"></i>@tel</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No phone numbers</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">QR Token</dt>
+                    <dd class="col-sm-9">@Model.QrToken ?? "N/A"</dd>
+
+                    <dt class="col-sm-3">Expire At</dt>
+                    <dd class="col-sm-9">
+                        @(Model.ExpireAt.ToString("yyyy-MM-dd HH:mm") ?? "N/A")
+                    </dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.IsDeleted)
+                        {
+                            <span class="badge bg-danger">Deleted</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Created On</dt>
+                    <dd class="col-sm-9">
+                        @(Model.CreatedOn.ToString("yyyy-MM-dd HH:mm") ?? "N/A")
+                    </dd>
+
+                    @if (Model.LastUpdatedOn.HasValue)
+                    {
+                        <dt class="col-sm-3">Last Updated On</dt>
+                        <dd class="col-sm-9">
+                            @Model.LastUpdatedOn.Value.ToString("yyyy-MM-dd HH:mm")
+                        </dd>
+                    }
+
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+@model Da3wa.Domain.Entities.Guest
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Create Guest";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Create Guest</h4>
+                <p class="text-muted mb-0">Add a new guest to the system</p>
+            </div>
+            <a href="@Url.Action("Index", "Guest")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Create Form -->
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Guest Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="FullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="FullName" name="FullName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="EventId" class="form-label">Event</label>
+                            <select class="form-select" id="EventId" name="EventId" required asp-items="@(ViewData["Events"] as SelectList)">
+                                <option value="">Select an event</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="FamilyNumber" class="form-label">Family Number</label>
+                            <input type="number" class="form-control" id="FamilyNumber" name="FamilyNumber" value="1" min="1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="IsAttending" class="form-label">Is Attending</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="IsAttending" name="IsAttending" checked>
+                                <label class="form-check-label" for="IsAttending">Yes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone Numbers</label>
+                        <div id="telContainer">
+                            <div class="input-group mb-2 tel-input">
+                                <input type="tel" class="form-control" name="phoneNumbers[0]" placeholder="Enter phone number">
+                                <button type="button" class="btn btn-outline-danger remove-tel">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="addTel">
+                            <i class="fas fa-plus me-2"></i>Add Phone Number
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-admin">
+                            <i class="fas fa-save me-2"></i>Create Guest
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var telIndex = 1; // Start from 1 since first is Tel[0]
+
+            $('#addTel').click(function() {
+                var telInput = `
+                    <div class="input-group mb-2 tel-input">
+                        <input type="tel" class="form-control" name="phoneNumbers[${telIndex}]" placeholder="Enter phone number">
+                        <button type="button" class="btn btn-outline-danger remove-tel">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                $('#telContainer').append(telInput);
+                telIndex++;
+            });
+
+            $(document).on('click', '.remove-tel', function() {
+                $(this).closest('.tel-input').remove();
+            });
+        });
+    </script>
+}

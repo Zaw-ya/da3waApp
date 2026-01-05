@@ -16,5 +16,8 @@ namespace Da3wa.Infrastructure.Persistence
 
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Guest> Guests { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace Da3wa.Application.Interfaces.Repositories
         IBaseRepository<Country> Countries { get; }
         IBaseRepository<Event> Events { get; }
         IBaseRepository<Category> Categories { get; }
+        IBaseRepository<Guest> Guests { get; }
 
         int Complete();
     }

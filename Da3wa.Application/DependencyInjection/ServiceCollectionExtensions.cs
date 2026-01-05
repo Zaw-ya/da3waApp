@@ -17,6 +17,7 @@ namespace Da3wa.Application.DependencyInjection
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IGuestService, GuestService>();
 
             //services.AddSingleton(configuration);
             return services;

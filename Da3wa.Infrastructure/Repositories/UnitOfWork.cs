@@ -18,6 +18,7 @@ namespace Da3wa.Infrastructure.Repositories
         public IBaseRepository<Country> Countries => new BaseRepository<Country>(_context);
         public IBaseRepository<Event> Events => new BaseRepository<Event>(_context);
         public IBaseRepository<Category> Categories => new BaseRepository<Category>(_context);
+        public IBaseRepository<Guest> Guests => new BaseRepository<Guest>(_context);
 
         public int Complete() => _context.SaveChanges();
 
