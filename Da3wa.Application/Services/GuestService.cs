@@ -244,5 +244,18 @@ namespace Da3wa.Application.Services
             _unitOfWork.Complete();
             return guests.Count;
         }
+
+        public async Task<bool> ConfirmAttendanceAsync(int guestId)
+        {
+            var guest = await _unitOfWork.Guests.GetById(guestId);
+            if (guest == null || guest.IsDeleted)
+                return false;
+
+            guest.IsAttending = true;
+            guest.LastUpdatedOn = DateTime.Now;
+            _unitOfWork.Guests.Update(guest);
+            _unitOfWork.Complete();
+            return true;
+        }
     }
 }

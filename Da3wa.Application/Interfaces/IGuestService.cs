@@ -13,5 +13,6 @@ namespace Da3wa.Application.Interfaces
         Task<List<Guest>> ImportFromVcfAsync(Stream vcfStream, int eventId);
         Task<List<Guest>> ParseVcfAsync(Stream vcfStream, int eventId);
         Task<int> CreateManyAsync(List<Guest> guests);
+        Task<bool> ConfirmAttendanceAsync(int guestId);
     }
 }

@@ -3,13 +3,14 @@ using QRCoder;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Runtime.Versioning;
 
 namespace Da3wa.WebUI.Services
 {
-
-        public class QrCodeService : IQrCodeService
-        {
-            private readonly IWebHostEnvironment _webHostEnvironment;
+    [SupportedOSPlatform("windows")]
+    public class QrCodeService : IQrCodeService
+    {
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
             public QrCodeService(IWebHostEnvironment webHostEnvironment)
             {

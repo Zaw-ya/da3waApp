@@ -1,0 +1,73 @@
+@model Da3wa.Domain.Entities.Guest
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Confirm Attendance";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="mb-0">
+                        <i class="bi bi-person-check-fill me-2"></i>Confirm Attendance
+                    </h2>
+                </div>
+                <div class="card-body p-5">
+                    @if (Model != null)
+                    {
+                        <div class="text-center mb-4">
+                            <h4 class="text-muted">Guest Details</h4>
+                            <h3 class="fw-bold">@Model.FullName</h3>
+                            <p class="text-muted">Event: @(Model.Event?.Name ?? "N/A")</p>
+                            @if (Model.IsAttending)
+                            {
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>This guest is already marked as attending.
+                                </div>
+                            }
+                        </div>
+
+                        <form asp-action="ConfirmAttendance" method="post">
+                            <input type="hidden" name="guestId" value="@Model.Id" />
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-lg me-2"></i>Confirm Attendance
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="ConfirmAttendance" method="get">
+                            <div class="mb-4">
+                                <label for="guestId" class="form-label h5">Enter Guest ID</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                    <input type="number" name="guestId" id="guestId" class="form-control" placeholder="e.g. 123" required autofocus />
+                                </div>
+                                <div class="form-text mt-2">Enter the ID scanned from the guest's QR code or invitation.</div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-search me-2"></i>Find Guest
+                                </button>
+                            </div>
+                        </form>
+                    }
+
+                    <div asp-validation-summary="All" class="text-danger mt-3"></div>
+                </div>
+                <div class="card-footer text-center py-3 bg-light">
+                    <p class="small text-muted mb-0">Powered by Da3waApp</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -261,5 +261,51 @@ namespace Da3wa.WebUI.Controllers
             TempData["SuccessMessage"] = $"Successfully imported {importedCount} guest(s) to the database.";
             return RedirectToAction(nameof(Index));
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmAttendance(int? guestId)
+        {
+            if (guestId.HasValue)
+            {
+                var guest = await _guestService.GetByIdAsync(guestId.Value);
+                if (guest != null)
+                {
+                    return View(guest);
+                }
+                ModelState.AddModelError("", "Guest not found.");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmAttendance(int guestId)
+        {
+            var success = await _guestService.ConfirmAttendanceAsync(guestId);
+            if (success)
+            {
+                var guest = await _guestService.GetByIdAsync(guestId);
+                TempData["SuccessMessage"] = $"Attendance confirmed for {guest?.FullName}!";
+                return RedirectToAction(nameof(Details), new { id = guestId });
+            }
+
+            ModelState.AddModelError("", "Failed to confirm attendance. Guest might not exist or is deleted.");
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmAttendanceDirect(int id)
+        {
+            var success = await _guestService.ConfirmAttendanceAsync(id);
+            if (success)
+            {
+                var guest = await _guestService.GetByIdAsync(id);
+                TempData["SuccessMessage"] = $"Attendance confirmed for {guest?.FullName}!";
+                return RedirectToAction(nameof(Details), new { id = id });
+            }
+
+            TempData["ErrorMessage"] = "Failed to confirm attendance.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
