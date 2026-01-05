@@ -25,7 +25,7 @@
                 <h5 class="card-title mb-0">Event Information</h5>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
 
                     <div class="mb-3">
@@ -59,6 +59,12 @@
                             @Html.DropDownList("CityId", ViewData["Cities"] as SelectList, "Select City", new { @class = "form-control" })
                             <span asp-validation-for="CityId" class="text-danger"></span>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="invitationImage" class="form-label">Invitation Background Image</label>
+                        <input type="file" class="form-control" id="invitationImage" name="invitationImage" accept="image/*">
+                        <small class="form-text text-muted">Upload the background invitation image. QR codes will be added to this image when creating guests.</small>
                     </div>
 
                     <div class="d-flex gap-2">

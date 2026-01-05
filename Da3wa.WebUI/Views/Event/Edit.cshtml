@@ -25,11 +25,12 @@
                 <h5 class="card-title mb-0">Event Information</h5>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="CreatedOn" />
                     <input type="hidden" asp-for="IsDeleted" />
+                    <input type="hidden" asp-for="ImagePath" />
 
                     <div class="mb-3">
                         <label asp-for="Name" class="form-label">Event Name <span class="text-danger">*</span></label>
@@ -62,6 +63,19 @@
                             @Html.DropDownList("CityId", ViewData["Cities"] as SelectList, "Select City", new { @class = "form-control" })
                             <span asp-validation-for="CityId" class="text-danger"></span>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="invitationImage" class="form-label">Invitation Background Image</label>
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <div class="mb-2">
+                                <img src="@Model.ImagePath" alt="Current invitation" class="img-thumbnail" style="max-height: 200px;">
+                                <p class="text-muted small mb-0">Current invitation image</p>
+                            </div>
+                        }
+                        <input type="file" class="form-control" id="invitationImage" name="invitationImage" accept="image/*">
+                        <small class="form-text text-muted">Upload a new invitation image to replace the existing one. QR codes will be added to this image when creating guests.</small>
                     </div>
 
                     <div class="d-flex gap-2">

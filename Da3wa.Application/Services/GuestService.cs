@@ -8,10 +8,12 @@ namespace Da3wa.Application.Services
     public class GuestService : IGuestService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IQrCodeService _qrCodeService;
 
-        public GuestService(IUnitOfWork unitOfWork)
+        public GuestService(IUnitOfWork unitOfWork, IQrCodeService qrCodeService)
         {
             _unitOfWork = unitOfWork;
+            _qrCodeService = qrCodeService;
         }
 
         public async Task<IEnumerable<Guest>> GetAllAsync()
@@ -30,6 +32,33 @@ namespace Da3wa.Application.Services
             guest.IsDeleted = false;
             var addedGuest = await _unitOfWork.Guests.Add(guest);
             _unitOfWork.Complete();
+
+            // Generate QR invitation if guest has an event
+            if (addedGuest.EventId.HasValue)
+            {
+                var guestEvent = await _unitOfWork.Events.GetById(addedGuest.EventId.Value);
+                if (guestEvent != null)
+                {
+                    // Calculate guest number (count of guests in this event)
+                    var guestCount = await _unitOfWork.Guests.GetQueryable()
+                        .CountAsync(g => g.EventId == addedGuest.EventId && !g.IsDeleted);
+
+                    // Generate QR invitation
+                    var invitationPath = await _qrCodeService.GenerateGuestInvitationAsync(
+                        addedGuest.Id,
+                        guestEvent.Name ?? "Event",
+                        guestEvent.ImagePath,
+                        guestCount,
+                        addedGuest.CreatedOn
+                    );
+
+                    // Update guest with invitation path
+                    addedGuest.InvitationImagePath = invitationPath;
+                    _unitOfWork.Guests.Update(addedGuest);
+                    _unitOfWork.Complete();
+                }
+            }
+
             return addedGuest;
         }
 
@@ -162,6 +191,10 @@ namespace Da3wa.Application.Services
 
         public async Task<int> CreateManyAsync(List<Guest> guests)
         {
+            if (guests == null || guests.Count == 0)
+                return 0;
+
+            // Add all guests first
             foreach (var guest in guests)
             {
                 guest.CreatedOn = DateTime.Now;
@@ -172,6 +205,40 @@ namespace Da3wa.Application.Services
                 }
                 await _unitOfWork.Guests.Add(guest);
             }
+            _unitOfWork.Complete();
+
+            // Group guests by event and generate QR invitations
+            var guestsByEvent = guests.Where(g => g.EventId.HasValue && g.EventId.Value > 0).GroupBy(g => g.EventId!.Value);
+
+            foreach (var eventGroup in guestsByEvent)
+            {
+                var guestEvent = await _unitOfWork.Events.GetById(eventGroup.Key);
+                if (guestEvent != null)
+                {
+                    // Get starting guest number for this event
+                    var existingCount = await _unitOfWork.Guests.GetQueryable()
+                        .CountAsync(g => g.EventId == eventGroup.Key && !g.IsDeleted);
+
+                    var guestNumber = existingCount - eventGroup.Count() + 1;
+
+                    // Generate QR invitation for each guest
+                    foreach (var guest in eventGroup)
+                    {
+                        var invitationPath = await _qrCodeService.GenerateGuestInvitationAsync(
+                            guest.Id,
+                            guestEvent.Name ?? "Event",
+                            guestEvent.ImagePath,
+                            guestNumber,
+                            guest.CreatedOn
+                        );
+
+                        guest.InvitationImagePath = invitationPath;
+                        _unitOfWork.Guests.Update(guest);
+                        guestNumber++;
+                    }
+                }
+            }
+
             _unitOfWork.Complete();
             return guests.Count;
         }

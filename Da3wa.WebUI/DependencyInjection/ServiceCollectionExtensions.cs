@@ -1,12 +1,13 @@
 using Da3wa.Application.DependencyInjection;
+using Da3wa.Application.Interfaces;
 using Da3wa.Domain.DependencyInjection;
 using Da3wa.Domain.Entities;
 using Da3wa.Infrastructure.DependencyInjection;
 using Da3wa.Infrastructure.Persistence;
 using Da3wa.WebUI.Filters;
+using Da3wa.WebUI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Da3wa.WebUI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Da3wa.WebUI.DependencyInjection
@@ -64,7 +65,7 @@ namespace Da3wa.WebUI.DependencyInjection
             .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
-
+            services.AddScoped<IQrCodeService, QrCodeService>();
             // Registers controllers, application and infrastructure services
             // Note: AddControllersWithViews is already called above with filters
             services.AddRazorPages();
