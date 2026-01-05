@@ -43,7 +43,8 @@ namespace Da3wa.WebUI.Services
                 // If event has a background image, overlay QR on it
                 if (!string.IsNullOrEmpty(eventImagePath))
                 {
-                    var eventImageFullPath = Path.Combine(_webHostEnvironment.WebRootPath, eventImagePath.TrimStart('/'));
+                    var relativePath = eventImagePath.StartsWith("~/") ? eventImagePath.Substring(2) : eventImagePath.TrimStart('/');
+                    var eventImageFullPath = Path.Combine(_webHostEnvironment.WebRootPath, relativePath);
 
                     if (File.Exists(eventImageFullPath))
                     {
@@ -62,7 +63,7 @@ namespace Da3wa.WebUI.Services
                 }
 
                 // Return relative path
-                return $"/invitations/{sanitizedEventName}/{fileName}";
+                return $"~/invitations/{sanitizedEventName}/{fileName}";
             }
 
             public async Task DeleteInvitationAsync(string imagePath)
@@ -70,7 +71,8 @@ namespace Da3wa.WebUI.Services
                 if (string.IsNullOrEmpty(imagePath))
                     return;
 
-                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('/'));
+                var relativePath = imagePath.StartsWith("~/") ? imagePath.Substring(2) : imagePath.TrimStart('/');
+                var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, relativePath);
 
                 if (File.Exists(fullPath))
                 {

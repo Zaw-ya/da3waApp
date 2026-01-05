@@ -76,7 +76,7 @@
                                     <td>
                                         @if (!string.IsNullOrEmpty(guest.InvitationImagePath))
                                         {
-                                            <img src="@guest.InvitationImagePath" alt="QR" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <img src="@Url.Content(guest.InvitationImagePath)" alt="QR" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                                         }
                                         else
                                         {

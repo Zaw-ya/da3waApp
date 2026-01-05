@@ -76,7 +76,7 @@ namespace Da3wa.WebUI.Controllers
                             await invitationImage.CopyToAsync(fileStream);
                         }
 
-                        @event.ImagePath = $"/uploads/events/{uniqueFileName}";
+                        @event.ImagePath = $"~/uploads/events/{uniqueFileName}";
                     }
                 }
 
@@ -129,7 +129,8 @@ namespace Da3wa.WebUI.Controllers
                         // Delete old image if exists
                         if (!string.IsNullOrEmpty(@event.ImagePath))
                         {
-                            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, @event.ImagePath.TrimStart('/'));
+                            var relativePath = @event.ImagePath.StartsWith("~/") ? @event.ImagePath.Substring(2) : @event.ImagePath.TrimStart('/');
+                            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, relativePath);
                             if (System.IO.File.Exists(oldImagePath))
                             {
                                 System.IO.File.Delete(oldImagePath);
@@ -150,7 +151,7 @@ namespace Da3wa.WebUI.Controllers
                             await invitationImage.CopyToAsync(fileStream);
                         }
 
-                        @event.ImagePath = $"/uploads/events/{uniqueFileName}";
+                        @event.ImagePath = $"~/uploads/events/{uniqueFileName}";
                     }
                 }
 
