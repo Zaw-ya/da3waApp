@@ -1,0 +1,136 @@
+@model Da3wa.Domain.Entities.Event
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Event Details";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Event Details</h4>
+                <p class="text-muted mb-0">View complete event information</p>
+            </div>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-edit me-2"></i>Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Main Information Card -->
+    <div class="col-lg-8 mb-4">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Event Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Event Name</label>
+                        <h6 class="mb-0">@Model.Name</h6>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Category</label>
+                        <h6 class="mb-0">
+                            @if (Model.Category != null)
+                            {
+                                <span class="badge bg-primary">@Model.Category.Name</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No Category</span>
+                            }
+                        </h6>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">City</label>
+                        <h6 class="mb-0">@(Model.City?.CityName ?? "N/A")</h6>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small mb-1">Event Type</label>
+                        <h6 class="mb-0">@Model.Type</h6>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <label class="text-muted small mb-1">Status</label>
+                        <div>
+                            @if (Model.IsDeleted)
+                            {
+                                <span class="badge bg-danger">Deleted</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div class="admin-card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-image me-2"></i>Event Image
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="@Model.ImagePath" alt="Event Image" class="img-fluid rounded border" style="max-height: 400px;">
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Sidebar Information -->
+    <div class="col-lg-4 mb-4">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Timestamps
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small mb-1">Created On</label>
+                    <p class="mb-0">
+                        <i class="fas fa-calendar-plus me-2 text-success"></i>
+                        @Model.CreatedOn.ToString("MMM dd, yyyy")
+                        <br>
+                        <small class="text-muted ms-4">@Model.CreatedOn.ToString("hh:mm tt")</small>
+                    </p>
+                </div>
+
+                @if (Model.LastUpdatedOn.HasValue)
+                {
+                    <div>
+                        <label class="text-muted small mb-1">Last Updated</label>
+                        <p class="mb-0">
+                            <i class="fas fa-calendar-edit me-2 text-primary"></i>
+                            @Model.LastUpdatedOn.Value.ToString("MMM dd, yyyy")
+                            <br>
+                            <small class="text-muted ms-4">@Model.LastUpdatedOn.Value.ToString("hh:mm tt")</small>
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

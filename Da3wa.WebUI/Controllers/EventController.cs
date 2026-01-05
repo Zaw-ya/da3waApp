@@ -28,6 +28,16 @@ namespace Da3wa.WebUI.Controllers
             return View(events);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var @event = await _eventService.GetByIdAsync(id);
+            if (@event == null)
+            {
+                return NotFound();
+            }
+            return View(@event);
+        }
+
         public async Task<IActionResult> Create()
         {
             await PopulateDropDowns();

@@ -48,6 +48,7 @@ namespace Da3wa.Application.Services
                         addedGuest.Id,
                         guestEvent.Name ?? "Event",
                         guestEvent.ImagePath,
+                        addedGuest.Tel?.FirstOrDefault(),
                         guestCount,
                         addedGuest.CreatedOn
                     );
@@ -228,6 +229,7 @@ namespace Da3wa.Application.Services
                             guest.Id,
                             guestEvent.Name ?? "Event",
                             guestEvent.ImagePath,
+                            guest.Tel?.FirstOrDefault(),
                             guestNumber,
                             guest.CreatedOn
                         );

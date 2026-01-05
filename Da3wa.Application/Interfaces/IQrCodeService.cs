@@ -11,7 +11,7 @@ namespace Da3wa.Application.Interfaces
         /// <param name="guestNumber">The guest number for file naming</param>
         /// <param name="createdDate">Creation date for metadata</param>
         /// <returns>The relative path to the generated invitation image</returns>
-        Task<string> GenerateGuestInvitationAsync(int guestId, string eventName, string? eventImagePath, int guestNumber, DateTime createdDate);
+        Task<string> GenerateGuestInvitationAsync(int guestId, string eventName, string? eventImagePath, string? phoneNumber, int guestNumber, DateTime createdDate);
 
         /// <summary>
         /// Deletes a guest invitation image

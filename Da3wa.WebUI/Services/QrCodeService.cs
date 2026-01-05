@@ -16,7 +16,7 @@ namespace Da3wa.WebUI.Services
                 _webHostEnvironment = webHostEnvironment;
             }
 
-            public async Task<string> GenerateGuestInvitationAsync(int guestId, string eventName, string? eventImagePath, int guestNumber, DateTime createdDate)
+            public async Task<string> GenerateGuestInvitationAsync(int guestId, string eventName, string? eventImagePath, string? phoneNumber, int guestNumber, DateTime createdDate)
             {
                 // Create folder structure: wwwroot/invitations/{eventName}/
                 var sanitizedEventName = SanitizeFileName(eventName);
@@ -27,13 +27,14 @@ namespace Da3wa.WebUI.Services
                     Directory.CreateDirectory(invitationsFolder);
                 }
 
-                // Generate file name: {guestNumber}_{date}.png
-                var fileName = $"{guestNumber}_{createdDate:yyyyMMdd}.png";
+                // Generate file name: {phoneNumber}.png (sanitize phone number)
+                var sanitizedPhone = string.IsNullOrWhiteSpace(phoneNumber) ? $"{guestNumber}_{createdDate:yyyyMMdd}" : SanitizeFileName(phoneNumber);
+                var fileName = $"{sanitizedPhone}.png";
                 var fullPath = Path.Combine(invitationsFolder, fileName);
 
-                // Generate QR code with guest ID
+                // Generate QR code with guest ID - Using ECC Level M for better compatibility
                 using var qrGenerator = new QRCodeGenerator();
-                using var qrCodeData = qrGenerator.CreateQrCode(guestId.ToString(), QRCodeGenerator.ECCLevel.Q);
+                using var qrCodeData = qrGenerator.CreateQrCode(guestId.ToString(), QRCodeGenerator.ECCLevel.M);
                 using var qrCode = new QRCode(qrCodeData);
 
                 // Generate QR code bitmap (300x300)
