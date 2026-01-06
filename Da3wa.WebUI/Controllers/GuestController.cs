@@ -286,7 +286,7 @@ namespace Da3wa.WebUI.Controllers
             {
                 var guest = await _guestService.GetByIdAsync(guestId);
                 TempData["SuccessMessage"] = $"Attendance confirmed for {guest?.FullName}!";
-                return RedirectToAction(nameof(Details), new { id = guestId });
+                return RedirectToAction(nameof(ConfirmAttendance));
             }
 
             ModelState.AddModelError("", "Failed to confirm attendance. Guest might not exist or is deleted.");

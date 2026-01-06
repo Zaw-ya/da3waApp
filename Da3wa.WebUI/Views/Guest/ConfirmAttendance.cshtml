@@ -195,6 +195,16 @@
             const guestInput = $('#guestId');
             const searchForm = $('#search-form');
 
+            // Auto-start scanner on page load if no guest is loaded
+            @if (Model == null)
+            {
+                <text>
+                setTimeout(function() {
+                    startScanner();
+                }, 500);
+                </text>
+            }
+
             toggleBtn.on('click', function() {
                 if (html5QrCode && html5QrCode.isScanning) {
                     stopScanner();
@@ -235,16 +245,54 @@
             function onScanSuccess(decodedText, decodedResult) {
                 // Success: decodedText contains the Guest ID
                 console.log(`Scan result: ${decodedText}`);
-                
-                // Beep or visual feedback
+
+                // Stop scanner immediately
+                stopScanner();
+
+                // Validate if the QR code contains a valid guest ID (numeric value)
+                const guestId = parseInt(decodedText);
+                if (isNaN(guestId) || guestId <= 0) {
+                    // Invalid QR code - not from our app
+                    const errorAlert = `
+                        <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3"
+                             style="z-index: 9999; min-width: 300px; box-shadow: 0 4px 12px rgba(220,53,69,0.3);" role="alert">
+                            <i class="bi bi-x-circle-fill me-2"></i>
+                            <strong>Wrong QR Code!</strong>
+                            <p class="mb-0 small">This QR code is not from our invitation system.</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                    $('body').append(errorAlert);
+
+                    // Auto-dismiss error after 4 seconds and restart scanner
+                    setTimeout(function() {
+                        $('.alert-danger').fadeOut(400, function() {
+                            $(this).remove();
+                        });
+                        startScanner();
+                    }, 4000);
+
+                    return;
+                }
+
+                // Display success message
+                const successAlert = `
+                    <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3"
+                         style="z-index: 9999; min-width: 300px; box-shadow: 0 4px 12px rgba(25,135,84,0.3);" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <strong>QR Code Scanned!</strong> Loading guest information...
+                    </div>
+                `;
+                $('body').append(successAlert);
+
+                // Fill the guest ID and submit after a brief delay
                 if (guestInput.length > 0) {
-                    guestInput.val(decodedText);
-                    
-                    // Stop scanner immediately
-                    stopScanner();
-                    
-                    // Trigger form submission
-                    searchForm.submit();
+                    guestInput.val(guestId);
+
+                    // Submit form after showing message for 1 second
+                    setTimeout(function() {
+                        searchForm.submit();
+                    }, 1000);
                 }
             }
 
