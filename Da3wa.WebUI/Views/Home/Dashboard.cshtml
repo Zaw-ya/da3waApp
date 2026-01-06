@@ -1,7 +1,7 @@
-﻿@page
+﻿@model Da3wa.WebUI.Models.DashboardViewModel
 @{
     Layout = "_AdminLayout";
-    // ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Dashboard";
 }
 
 <!-- Page Header -->
@@ -12,9 +12,6 @@
                 <h4 class="mb-0">Dashboard</h4>
                 <p class="text-muted mb-0">Welcome to your event management dashboard</p>
             </div>
-            <button class="btn btn-admin">
-                <i class="fas fa-plus me-2"></i>Create Event
-            </button>
         </div>
     </div>
 </div>
@@ -26,13 +23,15 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted mb-2">Total Events</h6>
-                    <h3 class="mb-0">24</h3>
+                    <h3 class="mb-0">@Model.TotalEvents</h3>
                 </div>
                 <div class="stat-icon bg-primary">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
             </div>
-            <p class="text-success mb-0"><small>+3 this month</small></p>
+            <p class="@(Model.EventsThisMonth > 0 ? "text-success" : "text-muted") mb-0">
+                <small>@(Model.EventsThisMonth > 0 ? $"+{Model.EventsThisMonth}" : "0") this month</small>
+            </p>
         </div>
     </div>
 
@@ -41,13 +40,15 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted mb-2">Total Guests</h6>
-                    <h3 class="mb-0">1,245</h3>
+                    <h3 class="mb-0">@Model.TotalGuests.ToString("N0")</h3>
                 </div>
                 <div class="stat-icon bg-success">
                     <i class="fas fa-users"></i>
                 </div>
             </div>
-            <p class="text-success mb-0"><small>+128 this week</small></p>
+            <p class="@(Model.GuestsThisWeek > 0 ? "text-success" : "text-muted") mb-0">
+                <small>@(Model.GuestsThisWeek > 0 ? $"+{Model.GuestsThisWeek}" : "0") this week</small>
+            </p>
         </div>
     </div>
 
@@ -56,13 +57,15 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted mb-2">Pending RSVPs</h6>
-                    <h3 class="mb-0">42</h3>
+                    <h3 class="mb-0">@Model.PendingRSVPs</h3>
                 </div>
                 <div class="stat-icon bg-warning">
                     <i class="fas fa-clock"></i>
                 </div>
             </div>
-            <p class="text-danger mb-0"><small>Need follow up</small></p>
+            <p class="@(Model.PendingRSVPs > 0 ? "text-danger" : "text-success") mb-0">
+                <small>@(Model.PendingRSVPs > 0 ? "Need follow up" : "All confirmed")</small>
+            </p>
         </div>
     </div>
 
@@ -70,14 +73,16 @@
         <div class="stat-card">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-muted mb-2">QR Scans</h6>
-                    <h3 class="mb-0">892</h3>
+                    <h6 class="text-muted mb-2">Attendance Confirmed</h6>
+                    <h3 class="mb-0">@Model.TotalAttendance</h3>
                 </div>
                 <div class="stat-icon bg-info">
-                    <i class="fas fa-qrcode"></i>
+                    <i class="fas fa-user-check"></i>
                 </div>
             </div>
-            <p class="text-success mb-0"><small>+45 today</small></p>
+            <p class="@(Model.AttendanceToday > 0 ? "text-success" : "text-muted") mb-0">
+                <small>@(Model.AttendanceToday > 0 ? $"+{Model.AttendanceToday}" : "0") today</small>
+            </p>
         </div>
     </div>
 </div>
