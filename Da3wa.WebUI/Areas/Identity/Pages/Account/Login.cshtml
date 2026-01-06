@@ -5,109 +5,129 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="login-page bg-light-section">
-    <div class="container py-5">
-        <div class="row justify-content-center align-items-center min-vh-80">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                    <div class="row g-0">
-                        <!-- Left Side - Login Form -->
-                        <div class="col-lg-6 p-5">
-                            <div class="text-center mb-4">
-                                <a class="navbar-brand mb-3" asp-area="" asp-controller="Home" asp-action="Index">
-                                    <i class="fas fa-calendar-alt"></i> Event<span>Pro</span>
-                                </a>
-                                <h2 class="fw-bold  text-muted text-white">Welcome Back</h2>
-                                <p class="text-muted">Sign in to manage your events</p>
-                            </div>
-
-                            <form id="account" method="post">
-                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
-                                <div class="mb-4">
-                                    <label asp-for="Input.Email" class="form-label fw-semibold">Email Address</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-envelope text-muted"></i>
-                                        </span>
-                                        <input asp-for="Input.Email" class="form-control py-3 border-start-0"
-                                               autocomplete="username" aria-required="true"
-                                               placeholder="Enter your email">
-                                    </div>
-                                    <span asp-validation-for="Input.Email" class="text-danger small"></span>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label asp-for="Input.Password" class="form-label fw-semibold">Password</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-lock text-muted"></i>
-                                        </span>
-                                        <input asp-for="Input.Password" class="form-control py-3 border-start-0"
-                                               autocomplete="current-password" aria-required="true"
-                                               placeholder="Enter your password" id="passwordInput">
-                                        <span class="input-group-text bg-light border-start-0 cursor-pointer"
-                                              onclick="togglePassword()">
-                                            <i class="fas fa-eye text-muted" id="passwordIcon"></i>
-                                        </span>
-                                    </div>
-                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                                </div>
-
-
-                                <button id="login-submit" type="submit" class="btn btn-gradient w-100 py-3 mb-3 fw-semibold">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                                </button>
-
-                                <div class="text-center mb-3">
-                                    <span class="text-muted">or</span>
-                                </div>
-
-                                <div class="d-grid">
-                                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-outline-light w-100 py-3 mb-3 fw-semibold" name="provider" value="Google" title="Log in using your Google account">
-                                            <i class="fab fa-google me-2"></i>Continue with Google
-                                        </button>
-                                    </form>
-                                </div>
-                            </form>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<br/>
+<br />
+<br />
+<div class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-container card glass-card border-0 shadow-2xl rounded-5 overflow-hidden">
+            <div class="row g-0">
+                <!-- Left Side - Aesthetic Image & Content -->
+                <div class="col-lg-6 d-none d-lg-flex position-relative auth-visual-side overflow-hidden">
+                    <div class="auth-visual-overlay"></div>
+                    <div class="auth-visual-content p-5 text-white position-relative z-1">
+                        <div class="mb-5">
+                            <a class="navbar-brand d-inline-flex align-items-center mb-0" asp-area="" asp-controller="Home" asp-action="Index">
+                                <span class="brand-icon me-2">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                                <span class="brand-text h4 mb-0 fw-bold">Event<span class="text-accent">Pro</span></span>
+                            </a>
                         </div>
-
-                        <!-- Right Side - Image & Social Login -->
-                        <div class="col-lg-6 bg-coffee d-none d-lg-flex flex-column justify-content-center p-5 text-white">
-                            <div class="text-center mb-5">
-                                <h3 class="fw-bold mb-3">Simplify Your Event Planning</h3>
-                                <p class="opacity-75">Join thousands of event organizers who trust EventPro for seamless event management.</p>
-                            </div>
-
-                            <div class="features-list mb-5">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <span>QR Code Invitations</span>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <span>Real-time Guest Tracking</span>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <span>Customizable Templates</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-white text-primary rounded-circle p-2 me-3">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <span>Automated Reminders</span>
-                                </div>
+                        
+                        <div class="mt-auto">
+                            <h2 class="display-5 fw-bold mb-4">Elevate Your Events</h2>
+                            <p class="lead opacity-75 mb-5">Seamless management, real-time tracking, and premium digital invitations all in one place.</p>
+                            
+                            <div class="feature-pills d-flex flex-wrap gap-2 mb-4">
+                                <span class="badge rounded-pill bg-white bg-opacity-10 backdrop-blur px-3 py-2 border border-white border-opacity-10">
+                                    <i class="fas fa-qrcode me-1 text-accent"></i> Smart Invites
+                                </span>
+                                <span class="badge rounded-pill bg-white bg-opacity-10 backdrop-blur px-3 py-2 border border-white border-opacity-10">
+                                    <i class="fas fa-chart-line me-1 text-accent"></i> Analytics
+                                </span>
+                                <span class="badge rounded-pill bg-white bg-opacity-10 backdrop-blur px-3 py-2 border border-white border-opacity-10">
+                                    <i class="fas fa-users me-1 text-accent"></i> Guest Sync
+                                </span>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Right Side - Login Form -->
+                <div class="col-lg-6 auth-form-side p-5 bg-white">
+                    <div class="mobile-brand d-lg-none text-center mb-4">
+                        <a class="navbar-brand d-inline-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                            <span class="brand-icon-dark me-2">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                            <span class="brand-text-dark h4 mb-0 fw-bold">Event<span>Pro</span></span>
+                        </a>
+                    </div>
+
+                    <div class="text-center text-lg-start mb-5">
+                        <h2 class="auth-title fw-bold text-dark mb-2">Welcome Back</h2>
+                        <p class="text-muted">Enter your credentials to access your account</p>
+                    </div>
+
+                    <form id="account" method="post" class="auth-form">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-soft-danger rounded-3" role="alert"></div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Input.Email" class="form-label small fw-bold text-uppercase tracking-wider">Email Address</label>
+                            <div class="input-modern-group">
+                                <span class="input-icon">
+                                    <i class="far fa-envelope"></i>
+                                </span>
+                                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="johndoe@example.com">
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Input.Password" class="form-label small fw-bold text-uppercase tracking-wider">Password</label>
+                            <div class="input-modern-group">
+                                <span class="input-icon">
+                                    <i class="far fa-lock"></i>
+                                </span>
+                                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="••••••••" id="passwordInput">
+                                <button type="button" class="password-toggle" onclick="togglePassword()">
+                                    <i class="far fa-eye" id="passwordIcon"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check custom-check">
+                                <input class="form-check-input" asp-for="Input.RememberMe" />
+                                <label class="form-check-label small" asp-for="Input.RememberMe">Remember me</label>
+                            </div>
+                        </div>
+
+                        <button id="login-submit" type="submit" class="btn btn-primary-premium w-100 py-3 rounded-3 fw-bold mb-4 shadow-accent">
+                            Sign In <i class="fas fa-arrow-right ms-2 fs-7"></i>
+                        </button>
+
+                        <div class="divider d-flex align-items-center mb-4">
+                             <div class="divider-line"></div>
+                             <span class="mx-3 text-muted small fw-bold text-uppercase">OR</span>
+                             <div class="divider-line"></div>
+                        </div>
+                    </form>
+
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form-external">
+                        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                        {
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                @if (provider.Name == "Google")
+                                {
+                                    <button type="submit" class="btn btn-outline-google w-100 py-3 rounded-3 d-flex align-items-center justify-content-center fw-semibold" name="provider" value="@provider.Name">
+                                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="me-2" style="width: 18px;">
+                                        Continue with Google
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-outline-secondary w-100 py-3 mb-3" name="provider" value="@provider.Name">@provider.DisplayName</button>
+                                }
+                            }
+                        }
+                    </form>
+
+                   
                 </div>
             </div>
         </div>
@@ -115,75 +135,199 @@
 </div>
 
 <style>
-    .min-vh-80 {
-        min-height: 80vh;
+    :root {
+        --primary-bg: #f4f7fe;
+        --accent-color: #8B7355;
+        --accent-vibrant: #A68B6A;
+        --text-dark: #1B254B;
+        --text-muted: #A3AED0;
+        --glass-bg: rgba(255, 255, 255, 0.7);
     }
 
-    .login-page {
-        padding-top: 100px;
-        padding-bottom: 60px;
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--primary-bg);
     }
 
-    .card {
-        border: none;
-    }
-
-    .input-group-text {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(139, 115, 85, 0.25);
-    }
-
-    .input-group:focus-within .input-group-text {
-        border-color: var(--primary-color);
-        background-color: rgba(139, 115, 85, 0.05);
-    }
-
-    .cursor-pointer {
-        cursor: pointer;
-    }
-
-    .features-list .bg-white {
-        width: 36px;
-        height: 36px;
+    .auth-page {
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: linear-gradient(135deg, #f4f7fe 0%, #e0e7ff 100%);
+        padding: 2rem;
     }
 
-    .btn-outline-light:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: white;
+    .auth-wrapper {
+        width: 100%;
+        max-width: 1000px;
     }
 
-    .social-login .btn {
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .auth-visual-side {
+        background: url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop') no-repeat center center;
+        background-size: cover;
+        min-height: 600px;
+    }
+
+    .auth-visual-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(139, 115, 85, 0.9) 0%, rgba(60, 48, 32, 0.9) 100%);
+        z-index: 0;
+    }
+
+    .brand-icon {
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-color);
+        font-size: 1.2rem;
+    }
+    
+    .brand-icon-dark {
+        width: 36px;
+        height: 36px;
+        background: var(--accent-color);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .text-accent {
+        color: var(--accent-vibrant) !important;
+    }
+
+    .backdrop-blur {
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    /* Form Modern Elements */
+    .auth-title {
+        color: var(--text-dark);
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+    }
+
+    .input-modern-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1.25rem;
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    .input-modern-group .form-control {
+        padding: 0.875rem 1rem 0.875rem 3.25rem;
+        border-radius: 12px;
+        border: 1px solid #E0E5F2;
+        background: #F4F7FE;
+        font-size: 0.95rem;
         transition: all 0.3s ease;
     }
 
-        .social-login .btn:hover {
-            transform: translateY(-2px);
-        }
-
-    @@media (max-width: 992px) {
-        .login-page {
-            padding-top: 80px;
-            padding-bottom: 40px;
-        }
+    .input-modern-group .form-control:focus {
+        background: white;
+        border-color: var(--accent-color);
+        box-shadow: 0 4px 20px rgba(139, 115, 85, 0.1);
     }
 
-    @@media (max-width: 576px) {
-        .login-page {
-            padding-top: 60px;
-            padding-bottom: 30px;
-        }
+    .password-toggle {
+        position: absolute;
+        right: 1.25rem;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 0;
+    }
 
-        .p-5 {
-            padding: 2rem !important;
+    .password-toggle:hover {
+        color: var(--accent-color);
+    }
+
+    /* Buttons */
+    .btn-primary-premium {
+        background: var(--accent-color);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-premium:hover {
+        background: var(--accent-vibrant);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(139, 115, 85, 0.2);
+    }
+
+    .shadow-accent {
+        box-shadow: 0 4px 6px rgba(139, 115, 85, 0.1);
+    }
+
+    .btn-outline-google {
+        border: 1px solid #E0E5F2;
+        background: white;
+        color: #1B254B;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-google:hover {
+        background: #F4F7FE;
+        border-color: #E0E5F2;
+        transform: translateY(-2px);
+    }
+
+    /* Divider */
+    .divider-line {
+        flex: 1;
+        height: 1px;
+        background: #E0E5F2;
+    }
+
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    .alert-soft-danger {
+        background-color: #fce8e8;
+        border: none;
+        color: #c53030;
+    }
+
+    .custom-check .form-check-input:checked {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+
+    @@media (max-width: 991.98px) {
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .auth-form-side {
+            padding: 3rem 2rem !important;
         }
     }
 </style>

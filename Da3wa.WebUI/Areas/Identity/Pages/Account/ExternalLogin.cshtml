@@ -1,32 +1,166 @@
 ﻿@page
 @model ExternalLoginModel
-@{
-    ViewData["Title"] = "Register";
-}
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<h1>@ViewData["Title"]</h1>
-<h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
-<hr />
+<div class="auth-page">
+    <div class="auth-wrapper py-5">
+        <div class="auth-container card glass-card border-0 shadow-2xl rounded-5 overflow-hidden mx-auto" style="max-width: 600px;">
+            <div class="p-5 bg-white">
+                <div class="text-center mb-5">
+                    <div class="brand-identity mb-4">
+                        <span class="brand-icon-dark mx-auto">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <h2 class="auth-title fw-bold text-dark mb-2">Final Step</h2>
+                    <p class="text-muted">Associate your <strong>@Model.ProviderDisplayName</strong> account</p>
+                </div>
 
-<p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
-</p>
+                <div class="alert alert-soft-info d-flex align-items-center mb-4 rounded-3 p-3">
+                    <i class="fas fa-info-circle me-3 fs-4"></i>
+                    <p class="mb-0 small">
+                        You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+                        Please confirm your email address to complete the link.
+                    </p>
+                </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email."/>
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-soft-danger rounded-3 p-3 mb-4" role="alert"></div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Input.Email" class="form-label small fw-bold text-uppercase tracking-wider">Email Address</label>
+                        <div class="input-modern-group">
+                            <span class="input-icon">
+                                <i class="far fa-envelope"></i>
+                            </span>
+                            <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="johndoe@example.com">
+                        </div>
+                        <span asp-validation-for="Input.Email" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-premium w-100 py-3 rounded-3 fw-bold shadow-accent">
+                        Complete Registration <i class="fas fa-check-circle ms-2 fs-7"></i>
+                    </button>
+                </form>
+
+                <div class="text-center mt-5">
+                    <a asp-page="./Login" class="text-muted small text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Login
+                    </a>
+                </div>
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        </div>
     </div>
 </div>
+
+<style>
+    :root {
+        --primary-bg: #f4f7fe;
+        --accent-color: #8B7355;
+        --accent-vibrant: #A68B6A;
+        --text-dark: #1B254B;
+        --text-muted: #A3AED0;
+        --glass-bg: rgba(255, 255, 255, 0.7);
+    }
+
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--primary-bg);
+    }
+
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f4f7fe 0%, #e0e7ff 100%);
+        padding: 2rem;
+    }
+
+    .auth-wrapper {
+        width: 100%;
+    }
+
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .brand-icon-dark {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-color);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .auth-title {
+        color: var(--text-dark);
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+    }
+
+    .alert-soft-info {
+        background-color: #e6f7ff;
+        color: #005a8d;
+        border: none;
+    }
+
+    .input-modern-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1.25rem;
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    .input-modern-group .form-control {
+        padding: 0.875rem 1rem 0.875rem 3.25rem;
+        border-radius: 12px;
+        border: 1px solid #E0E5F2;
+        background: #F4F7FE;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-premium {
+        background: var(--accent-color);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-premium:hover {
+        background: var(--accent-vibrant);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(139, 115, 85, 0.2);
+    }
+
+    .shadow-accent {
+        box-shadow: 0 4px 6px rgba(139, 115, 85, 0.1);
+    }
+
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    .alert-soft-danger {
+        background-color: #fce8e8;
+        border: none;
+        color: #c53030;
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
