@@ -7,67 +7,251 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg border-0 rounded-lg">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 <div class="card-header bg-primary text-white text-center py-4">
-                    <h2 class="mb-0">
-                        <i class="bi bi-person-check-fill me-2"></i>Confirm Attendance
+                    <h2 class="mb-0 fw-bold">
+                        <i class="bi bi-qr-code-scan me-2"></i>Attendance Check-in
                     </h2>
                 </div>
-                <div class="card-body p-5">
+                
+                <div class="card-body p-4 p-md-5">
+                    <!-- Scanner Section -->
+                    <div id="scanner-section" class="mb-5 @(Model != null ? "d-none" : "")">
+                        <div class="text-center mb-4">
+                            <h4 class="fw-bold">Scan Guest QR Code</h4>
+                            <p class="text-muted small">Point your camera at the guest's digital invitation</p>
+                        </div>
+                        
+                        <div id="qr-reader-container" class="position-relative bg-light rounded-4 overflow-hidden mb-4 border-dashed border-2 p-1" style="min-height: 300px;">
+                            <div id="qr-reader" style="width: 100%;"></div>
+                            <div id="scanner-placeholder" class="position-absolute top-50 left-50 translate-middle text-center w-100 p-4">
+                                <i class="bi bi-camera text-muted display-1 mb-3"></i>
+                                <p class="text-muted">Camera feed will appear here</p>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button id="toggle-scanner" class="btn btn-outline-primary btn-lg rounded-pill fw-bold">
+                                <i class="bi bi-camera-fill me-2"></i>Start Video Scanner
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="divider d-flex align-items-center mb-4 @(Model != null ? "d-none" : "")">
+                        <div class="flex-grow-1 border-bottom"></div>
+                        <span class="px-3 text-muted small fw-bold">OR MANUALLY ENTER</span>
+                        <div class="flex-grow-1 border-bottom"></div>
+                    </div>
+
                     @if (Model != null)
                     {
-                        <div class="text-center mb-4">
-                            <h4 class="text-muted">Guest Details</h4>
-                            <h3 class="fw-bold">@Model.FullName</h3>
-                            <p class="text-muted">Event: @(Model.Event?.Name ?? "N/A")</p>
+                        <!-- Confirmation Preview Section -->
+                        <div class="text-center mb-5 fade-in">
+                            <div class="mb-4">
+                                <div class="avatar-circle mx-auto bg-soft-primary text-primary mb-3">
+                                    <i class="bi bi-person-fill display-4"></i>
+                                </div>
+                                <h3 class="fw-bold mb-1">@Model.FullName</h3>
+                                <div class="badge bg-soft-info text-info rounded-pill px-3 py-2">
+                                    <i class="bi bi-calendar-event me-2"></i>@(Model.Event?.Name ?? "General Admission")
+                                </div>
+                            </div>
+
                             @if (Model.IsAttending)
                             {
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>This guest is already marked as attending.
+                                <div class="alert alert-warning border-0 rounded-3 shadow-sm py-3 px-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+                                        <div class="text-start">
+                                            <h6 class="mb-0 fw-bold">Already Checked-in</h6>
+                                            <p class="mb-0 small opacity-75">This guest was already marked as attending.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-success border-0 rounded-3 shadow-sm py-3 px-4 mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill fs-3 me-3 text-success"></i>
+                                        <div class="text-start">
+                                            <h6 class="mb-0 fw-bold text-dark">Valid Invitation</h6>
+                                            <p class="mb-0 small text-success">ID verified. Ready to confirm.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             }
                         </div>
 
                         <form asp-action="ConfirmAttendance" method="post">
                             <input type="hidden" name="guestId" value="@Model.Id" />
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-success btn-lg">
-                                    <i class="bi bi-check-lg me-2"></i>Confirm Attendance
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-success btn-lg rounded-pill py-3 fw-bold shadow-sm">
+                                    <i class="bi bi-person-check-fill me-2"></i>Confirm Attendance
                                 </button>
-                                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                                <a asp-action="ConfirmAttendance" class="btn btn-light btn-lg rounded-pill py-3 fw-bold">
+                                    <i class="bi bi-arrow-left me-2"></i>Scan Another
+                                </a>
                             </div>
                         </form>
                     }
                     else
                     {
-                        <form asp-action="ConfirmAttendance" method="get">
+                        <!-- Search Form Section -->
+                        <form id="search-form" asp-action="ConfirmAttendance" method="get">
                             <div class="mb-4">
-                                <label for="guestId" class="form-label h5">Enter Guest ID</label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text"><i class="bi bi-hash"></i></span>
-                                    <input type="number" name="guestId" id="guestId" class="form-control" placeholder="e.g. 123" required autofocus />
+                                <label for="guestId" class="form-label small fw-bold text-uppercase tracking-wider">Guest ID Number</label>
+                                <div class="input-modern-group">
+                                    <span class="input-icon">
+                                        <i class="bi bi-hash"></i>
+                                    </span>
+                                    <input type="number" name="guestId" id="guestId" class="form-control form-control-lg" placeholder="e.g. 123456" required autofocus />
                                 </div>
-                                <div class="form-text mt-2">Enter the ID scanned from the guest's QR code or invitation.</div>
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
+                                <button type="submit" id="search-submit" class="btn btn-primary btn-lg rounded-pill py-3 fw-bold shadow-sm">
                                     <i class="bi bi-search me-2"></i>Find Guest
                                 </button>
                             </div>
                         </form>
                     }
 
-                    <div asp-validation-summary="All" class="text-danger mt-3"></div>
+                    <div asp-validation-summary="All" class="text-danger mt-4 small text-center"></div>
                 </div>
-                <div class="card-footer text-center py-3 bg-light">
-                    <p class="small text-muted mb-0">Powered by Da3waApp</p>
+
+                <div class="card-footer bg-light text-center py-3">
+                    <span class="text-muted small">Scanner active. Please hold steady.</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .rounded-4 { border-radius: 1.25rem !important; }
+    .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+    .bg-soft-info { background-color: rgba(13, 202, 240, 0.1); }
+    .text-info { color: #0dcaf0 !important; }
+    
+    .tracking-wider { letter-spacing: 0.1em; }
+    
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .border-dashed { border-style: dashed !important; }
+    
+    .input-modern-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        z-index: 10;
+        color: #6c757d;
+    }
+    
+    .input-modern-group .form-control {
+        padding-left: 3rem;
+        border-radius: 0.75rem;
+    }
+
+    #qr-reader {
+        border: none !important;
+    }
+
+    #qr-reader img {
+        display: none !important;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <script>
+        $(document).ready(function() {
+            let html5QrCode = null;
+            const toggleBtn = $('#toggle-scanner');
+            const placeholder = $('#scanner-placeholder');
+            const guestInput = $('#guestId');
+            const searchForm = $('#search-form');
+
+            toggleBtn.on('click', function() {
+                if (html5QrCode && html5QrCode.isScanning) {
+                    stopScanner();
+                } else {
+                    startScanner();
+                }
+            });
+
+            function startScanner() {
+                html5QrCode = new Html5Qrcode("qr-reader");
+                const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+                html5QrCode.start(
+                    { facingMode: "environment" }, 
+                    config,
+                    onScanSuccess,
+                    onScanFailure
+                ).then(() => {
+                    placeholder.hide();
+                    toggleBtn.html('<i class="bi bi-camera-video-off-fill me-2"></i>Stop Scanner');
+                    toggleBtn.removeClass('btn-outline-primary').addClass('btn-outline-danger');
+                }).catch(err => {
+                    console.error("Scanner start error:", err);
+                    alert("Camera access denied or error: " + err);
+                });
+            }
+
+            function stopScanner() {
+                if (html5QrCode) {
+                    html5QrCode.stop().then(() => {
+                        placeholder.show();
+                        toggleBtn.html('<i class="bi bi-camera-fill me-2"></i>Start Video Scanner');
+                        toggleBtn.removeClass('btn-outline-danger').addClass('btn-outline-primary');
+                    });
+                }
+            }
+
+            function onScanSuccess(decodedText, decodedResult) {
+                // Success: decodedText contains the Guest ID
+                console.log(`Scan result: ${decodedText}`);
+                
+                // Beep or visual feedback
+                if (guestInput.length > 0) {
+                    guestInput.val(decodedText);
+                    
+                    // Stop scanner immediately
+                    stopScanner();
+                    
+                    // Trigger form submission
+                    searchForm.submit();
+                }
+            }
+
+            function onScanFailure(error) {
+                // Scan failure, usually better to ignore and continue scanning
+                // console.warn(`Scan error: ${error}`);
+            }
+        });
+    </script>
 }
