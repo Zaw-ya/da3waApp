@@ -64,6 +64,14 @@ namespace Da3wa.WebUI.DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            // Add Google authentication
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                });
+
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IQrCodeService, QrCodeService>();
             // Registers controllers, application and infrastructure services
