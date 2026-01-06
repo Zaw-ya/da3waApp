@@ -12,6 +12,14 @@
                 <h4 class="mb-0">Dashboard</h4>
                 <p class="text-muted mb-0">Welcome to your event management dashboard</p>
             </div>
+            <div class="d-flex gap-2">
+                <a href="@Url.Action("Create", "Event")" class="btn btn-admin">
+                    <i class="fas fa-calendar-plus me-2"></i>Create Event
+                </a>
+                <a href="@Url.Action("Create", "Auth")" class="btn btn-outline-admin">
+                    <i class="fas fa-user-plus me-2"></i>Create User
+                </a>
+            </div>
         </div>
     </div>
 </div>
