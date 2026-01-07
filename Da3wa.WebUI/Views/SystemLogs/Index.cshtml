@@ -1,0 +1,191 @@
+@model Da3wa.WebUI.Models.SystemLogsViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "System Logs";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">System Logs</h4>
+                <p class="text-muted mb-0">View and manage application log files</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+                    <i class="fas fa-trash-alt me-2"></i>Clear All Logs
+                </button>
+                <a href="@Url.Action("Index")" class="btn btn-admin">
+                    <i class="fas fa-sync-alt me-2"></i>Refresh
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Log Files Card -->
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Log Files (@Model.LogFiles.Count)
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.LogFiles.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Size</th>
+                                    <th>Created Date</th>
+                                    <th>Last Modified</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var log in Model.LogFiles)
+                                {
+                                    <tr>
+                                        <td>
+                                            <i class="fas fa-file-alt text-primary me-2"></i>
+                                            <strong>@log.FileName</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">@log.FileSize</span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                @log.CreatedDate.ToString("MMM dd, yyyy HH:mm")
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock me-1"></i>
+                                                @log.LastModified.ToString("MMM dd, yyyy HH:mm")
+                                            </small>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="btn-group" role="group">
+                                                <a href="@Url.Action("ViewLog", new { fileName = log.FileName })"
+                                                   class="btn btn-sm btn-outline-primary"
+                                                   title="View Log">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="@Url.Action("DownloadLog", new { fileName = log.FileName })"
+                                                   class="btn btn-sm btn-outline-success"
+                                                   title="Download">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="confirmDelete('@log.FileName')"
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No log files found</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteLogModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the log file <strong id="deleteFileName"></strong>?</p>
+                <p class="text-danger mb-0"><i class="fas fa-exclamation-triangle me-2"></i>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteLogForm" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Clear All Logs Modal -->
+<div class="modal fade" id="clearLogsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Clear All Logs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete all log files?</p>
+                <p class="text-danger mb-0"><i class="fas fa-exclamation-triangle me-2"></i>This will permanently delete all @Model.LogFiles.Count log file(s).</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="ClearAllLogs" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Clear All</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(fileName) {
+            document.getElementById('deleteFileName').textContent = fileName;
+            document.getElementById('deleteLogForm').action = '@Url.Action("DeleteLog")' + '?fileName=' + encodeURIComponent(fileName);
+
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteLogModal'));
+            deleteModal.show();
+        }
+
+        // Auto refresh every 30 seconds
+        var autoRefresh = setInterval(function() {
+            location.reload();
+        }, 30000);
+
+        // Stop auto refresh when user interacts
+        document.addEventListener('click', function() {
+            clearInterval(autoRefresh);
+        });
+    </script>
+}

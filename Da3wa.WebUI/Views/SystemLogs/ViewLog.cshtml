@@ -1,0 +1,192 @@
+@model Da3wa.WebUI.Models.LogFileContentViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "View Log - " + Model.FileName;
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">
+                    <i class="fas fa-file-alt me-2"></i>@Model.FileName
+                </h4>
+                <p class="text-muted mb-0">
+                    Size: @Model.FileSize | Lines: @Model.TotalLines | Last Modified: @Model.LastModified.ToString("MMM dd, yyyy HH:mm:ss")
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Logs
+                </a>
+                <a href="@Url.Action("DownloadLog", new { fileName = Model.FileName })" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Download
+                </a>
+                <button type="button" class="btn btn-admin" onclick="location.reload()">
+                    <i class="fas fa-sync-alt me-2"></i>Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log Content Card -->
+<div class="row">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Log Content</h5>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="autoScroll" checked>
+                    <label class="form-check-label" for="autoScroll">Auto-scroll to bottom</label>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Lines.Any())
+                {
+                    <div class="log-viewer-container">
+                        <pre class="log-content" id="logContent">@foreach (var line in Model.Lines)
+{<span class="log-line">@line</span>
+}</pre>
+                    </div>
+
+                    @if (Model.TotalLines > 1000)
+                    {
+                        <div class="alert alert-info m-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Showing the last 1000 lines out of @Model.TotalLines total lines. Download the file to view the complete log.
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Log file is empty</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .log-viewer-container {
+        max-height: 600px;
+        overflow-y: auto;
+        background-color: #1e1e1e;
+        color: #d4d4d4;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    }
+
+    .log-content {
+        margin: 0;
+        padding: 20px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .log-line {
+        display: block;
+        padding: 2px 0;
+    }
+
+    .log-line:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Syntax highlighting for common log patterns */
+    .log-content {
+        color: #d4d4d4;
+    }
+
+    /* Highlight ERROR lines */
+    .log-line:has-text("ERROR"),
+    .log-line:has-text("Error"),
+    .log-line:has-text("error") {
+        color: #f48771;
+        background-color: rgba(244, 135, 113, 0.1);
+    }
+
+    /* Highlight WARNING lines */
+    .log-line:has-text("WARNING"),
+    .log-line:has-text("Warning"),
+    .log-line:has-text("warning") {
+        color: #dcdcaa;
+        background-color: rgba(220, 220, 170, 0.1);
+    }
+
+    /* Highlight INFO lines */
+    .log-line:has-text("INFO"),
+    .log-line:has-text("Info"),
+    .log-line:has-text("info") {
+        color: #4ec9b0;
+    }
+
+    .log-viewer-container::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .log-viewer-container::-webkit-scrollbar-track {
+        background: #2d2d30;
+    }
+
+    .log-viewer-container::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 5px;
+    }
+
+    .log-viewer-container::-webkit-scrollbar-thumb:hover {
+        background: #666;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Auto-scroll to bottom on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const logContainer = document.querySelector('.log-viewer-container');
+            const autoScrollCheckbox = document.getElementById('autoScroll');
+
+            if (logContainer && autoScrollCheckbox && autoScrollCheckbox.checked) {
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            // Auto refresh every 10 seconds
+            var autoRefresh = setInterval(function() {
+                location.reload();
+            }, 10000);
+
+            // Stop auto refresh when user scrolls up
+            if (logContainer) {
+                logContainer.addEventListener('scroll', function() {
+                    const isAtBottom = logContainer.scrollHeight - logContainer.scrollTop === logContainer.clientHeight;
+                    if (!isAtBottom) {
+                        clearInterval(autoRefresh);
+                        autoScrollCheckbox.checked = false;
+                    }
+                });
+            }
+        });
+
+        // Highlight error and warning lines
+        document.addEventListener('DOMContentLoaded', function() {
+            const logLines = document.querySelectorAll('.log-line');
+            logLines.forEach(function(line) {
+                const text = line.textContent.toLowerCase();
+                if (text.includes('error')) {
+                    line.style.color = '#f48771';
+                    line.style.backgroundColor = 'rgba(244, 135, 113, 0.1)';
+                } else if (text.includes('warning') || text.includes('warn')) {
+                    line.style.color = '#dcdcaa';
+                    line.style.backgroundColor = 'rgba(220, 220, 170, 0.1)';
+                } else if (text.includes('info')) {
+                    line.style.color = '#4ec9b0';
+                }
+            });
+        });
+    </script>
+}
