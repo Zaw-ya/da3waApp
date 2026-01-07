@@ -123,9 +123,18 @@ namespace Da3wa.WebUI.Controllers
                                 System.IO.File.Delete(tempFilePath);
                             }
 
+                            // Delete template file after successful conversion
+                            if (System.IO.File.Exists(templatePermanentPath))
+                            {
+                                System.IO.File.Delete(templatePermanentPath);
+                            }
+
                             // Set image path to processed image
                             var fileName = Path.GetFileName(processedImagePath);
                             @event.ImagePath = $"~/uploads/events/{fileName}";
+
+                            // Clear template file path since we deleted it
+                            @event.TemplateFilePath = null;
                         }
                         catch (Exception ex)
                         {
@@ -284,9 +293,18 @@ namespace Da3wa.WebUI.Controllers
                                 System.IO.File.Delete(tempFilePath);
                             }
 
+                            // Delete template file after successful conversion
+                            if (System.IO.File.Exists(templatePermanentPath))
+                            {
+                                System.IO.File.Delete(templatePermanentPath);
+                            }
+
                             // Set image path to processed image
                             var fileName = Path.GetFileName(processedImagePath);
                             @event.ImagePath = $"~/uploads/events/{fileName}";
+
+                            // Clear template file path since we deleted it
+                            @event.TemplateFilePath = null;
                         }
                         catch (Exception ex)
                         {

@@ -20,7 +20,8 @@
         public DateTime? AttendTime { get; set; }
         public DateTime? LeaveTime { get; set; }
 
-
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
 
         public string? UserId { get; set; }
         public virtual ApplicationUser? User { get; set; }

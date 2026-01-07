@@ -87,7 +87,7 @@
     }
 
     .btn-submit {
-        background: linear-gradient(135deg, var(--admin-primary) 0%, #5a4fcf 100%);
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         border: none;
         padding: 0.75rem 2rem;
         font-weight: 500;
@@ -97,7 +97,7 @@
 
     .btn-submit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 </style>
 
@@ -272,6 +272,18 @@
                             <input asp-for="LeaveTime" type="time" class="form-control">
                             <span asp-validation-for="LeaveTime" class="text-danger"></span>
                             <small class="form-text text-muted">Expected event end time</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Latitude</label>
+                            <input type="number" step="any" class="form-control" id="Latitude" name="Latitude" value="@Model.Latitude" placeholder="e.g., 24.7136">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Longitude</label>
+                            <input type="number" step="any" class="form-control" id="Longitude" name="Longitude" value="@Model.Longitude" placeholder="e.g., 46.6753">
                         </div>
                     </div>
                 </div>

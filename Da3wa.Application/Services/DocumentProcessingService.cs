@@ -5,11 +5,19 @@ using DocumentFormat.OpenXml.Presentation;
 using iTextSharp.text.pdf;
 using SkiaSharp;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Da3wa.Application.Services
 {
     public class DocumentProcessingService : IDocumentProcessingService
     {
+        public DocumentProcessingService()
+        {
+            // Set license key for GemBox (Free version)
+            GemBox.Presentation.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
+            GemBox.Document.ComponentInfo.SetLicense("FREE-LIMITED-KEY");
+        }
+
         public async Task<string> ProcessTemplateAndConvertToPngAsync(string templateFilePath, string bridegroomName, string brideName, string eventName, string outputFolder)
         {
             if (!File.Exists(templateFilePath))
@@ -72,7 +80,7 @@ namespace Da3wa.Application.Services
         {
             await Task.Run(() =>
             {
-                using (PresentationDocument presentationDocument = PresentationDocument.Open(filePath, true))
+                using (DocumentFormat.OpenXml.Packaging.PresentationDocument presentationDocument = DocumentFormat.OpenXml.Packaging.PresentationDocument.Open(filePath, true))
                 {
                     var presentationPart = presentationDocument.PresentationPart;
                     if (presentationPart == null) return;
@@ -83,9 +91,9 @@ namespace Da3wa.Application.Services
                         {
                             if (text.Text != null)
                             {
-                                text.Text = text.Text
-                                    .Replace("male", bridegroomName, StringComparison.OrdinalIgnoreCase)
-                                    .Replace("female", brideName, StringComparison.OrdinalIgnoreCase);
+                                // Replace whole words only using word boundaries
+                                text.Text = ReplaceWholeWord(text.Text, "male", bridegroomName);
+                                text.Text = ReplaceWholeWord(text.Text, "female", brideName);
                             }
                         }
                     }
@@ -108,9 +116,9 @@ namespace Da3wa.Application.Services
                     {
                         if (text.Text != null)
                         {
-                            text.Text = text.Text
-                                .Replace("male", bridegroomName, StringComparison.OrdinalIgnoreCase)
-                                .Replace("female", brideName, StringComparison.OrdinalIgnoreCase);
+                            // Replace whole words only using word boundaries
+                            text.Text = ReplaceWholeWord(text.Text, "male", bridegroomName);
+                            text.Text = ReplaceWholeWord(text.Text, "female", brideName);
                         }
                     }
 
@@ -137,9 +145,9 @@ namespace Da3wa.Application.Services
                         string fieldValue = form.GetField(fieldName);
                         if (!string.IsNullOrEmpty(fieldValue))
                         {
-                            fieldValue = fieldValue
-                                .Replace("male", bridegroomName, StringComparison.OrdinalIgnoreCase)
-                                .Replace("female", brideName, StringComparison.OrdinalIgnoreCase);
+                            // Replace whole words only using word boundaries
+                            fieldValue = ReplaceWholeWord(fieldValue, "male", bridegroomName);
+                            fieldValue = ReplaceWholeWord(fieldValue, "female", brideName);
                             form.SetField(fieldName, fieldValue);
                         }
                     }
@@ -163,13 +171,57 @@ namespace Da3wa.Application.Services
                         ConvertPdfToPng(filePath, outputPath);
                         break;
                     case ".pptx":
+                        ConvertPowerPointToPng(filePath, outputPath);
+                        break;
                     case ".docx":
-                        // For Office files, we'll create a simple placeholder image
-                        // In production, you might want to use a library like Aspose or LibreOffice
-                        CreatePlaceholderImage(outputPath, "Invitation Card");
+                        ConvertWordToPng(filePath, outputPath);
                         break;
                 }
             });
+        }
+
+        private void ConvertPowerPointToPng(string pptxPath, string outputPath)
+        {
+            try
+            {
+                // Load the presentation using GemBox
+                var presentation = GemBox.Presentation.PresentationDocument.Load(pptxPath);
+
+                // Save first slide as PNG - GemBox will preserve original dimensions by default
+                var saveOptions = new GemBox.Presentation.ImageSaveOptions(GemBox.Presentation.ImageSaveFormat.Png)
+                {
+                    SlideNumber = 0 // First slide only
+                };
+
+                presentation.Save(outputPath, saveOptions);
+            }
+            catch (Exception ex)
+            {
+                // Fallback to placeholder if conversion fails
+                CreatePlaceholderImage(outputPath, $"Invitation Card (PowerPoint conversion failed: {ex.Message})");
+            }
+        }
+
+        private void ConvertWordToPng(string docxPath, string outputPath)
+        {
+            try
+            {
+                // Load the document using GemBox
+                var document = GemBox.Document.DocumentModel.Load(docxPath);
+
+                // Save first page as PNG - GemBox will preserve original dimensions by default
+                var saveOptions = new GemBox.Document.ImageSaveOptions(GemBox.Document.ImageSaveFormat.Png)
+                {
+                    PageNumber = 0 // First page only
+                };
+
+                document.Save(outputPath, saveOptions);
+            }
+            catch (Exception ex)
+            {
+                // Fallback to placeholder if conversion fails
+                CreatePlaceholderImage(outputPath, $"Invitation Card (Word conversion failed: {ex.Message})");
+            }
         }
 
         private void ConvertPdfToPng(string pdfPath, string outputPath)
@@ -216,16 +268,14 @@ namespace Da3wa.Application.Services
                     canvas.DrawRect(0, 0, width, height, paint);
                 }
 
-                // Draw text
+                // Draw text with updated SkiaSharp API
                 using (var paint = new SKPaint())
+                using (var font = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 64))
                 {
                     paint.Color = SKColors.White;
                     paint.IsAntialias = true;
-                    paint.TextSize = 64;
-                    paint.TextAlign = SKTextAlign.Center;
-                    paint.Typeface = SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold);
 
-                    canvas.DrawText(text, width / 2, height / 2, paint);
+                    canvas.DrawText(text, width / 2, height / 2, SKTextAlign.Center, font, paint);
                 }
 
                 // Save image
@@ -243,6 +293,14 @@ namespace Da3wa.Application.Services
             var invalidChars = System.IO.Path.GetInvalidFileNameChars();
             var sanitized = string.Join("_", fileName.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
             return string.IsNullOrWhiteSpace(sanitized) ? "invitation" : sanitized;
+        }
+
+        private string ReplaceWholeWord(string text, string word, string replacement)
+        {
+            // Use word boundaries to replace only whole words, case-insensitive
+            // \b ensures we only match whole words, not parts of other words
+            string pattern = $@"\b{Regex.Escape(word)}\b";
+            return Regex.Replace(text, pattern, replacement, RegexOptions.IgnoreCase);
         }
     }
 }
