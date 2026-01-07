@@ -1,6 +1,9 @@
 using Da3wa.Infrastructure.Data;
+using Da3wa.WebUI.Filters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Hangfire;
+using Hangfire.SqlServer;
 
 
 // Global usings provide DI extension visibility.
@@ -11,6 +14,11 @@ builder.Services.AddWebUI(builder.Configuration);
 
 // Register seeding service
 builder.Services.AddScoped<ApplicationDbContextSeed>();
+
+
+
+// Add the processing server as IHostedService
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -50,6 +58,12 @@ app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Hangfire Dashboard (accessible at /hangfire)
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter() }
+});
 
 app.MapStaticAssets();
 

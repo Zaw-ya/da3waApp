@@ -167,7 +167,7 @@ namespace Da3wa.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Da3wa.Domain.Entities.City", b =>
@@ -204,7 +204,7 @@ namespace Da3wa.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("Da3wa.Domain.Entities.Country", b =>
@@ -236,7 +236,7 @@ namespace Da3wa.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Da3wa.Domain.Entities.Event", b =>
@@ -286,7 +286,7 @@ namespace Da3wa.Infrastructure.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Da3wa.Domain.Entities.Guest", b =>
@@ -341,7 +341,7 @@ namespace Da3wa.Infrastructure.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Guests");
+                    b.ToTable("Guests", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
