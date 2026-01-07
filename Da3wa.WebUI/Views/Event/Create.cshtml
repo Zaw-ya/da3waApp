@@ -1,15 +1,112 @@
 @model Da3wa.Domain.Entities.Event
+@using System.IO
+@using Microsoft.AspNetCore.Mvc.Rendering
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Create Event";
 }
 
+<style>
+    .event-form-container {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .form-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: 1rem;
+    }
+
+    .form-section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-section-title i {
+        margin-right: 0.75rem;
+        color: var(--admin-primary);
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 1.5px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.6rem 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--admin-primary);
+        box-shadow: 0 0 0 0.2rem rgba(106, 90, 205, 0.15);
+    }
+
+    .required-badge {
+        color: #dc3545;
+        font-size: 0.85rem;
+    }
+
+    .current-file-badge {
+        display: inline-block;
+        background: #d4edda;
+        color: #155724;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+
+    .image-preview {
+        margin-top: 0.75rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px dashed #dee2e6;
+    }
+
+    .image-preview img {
+        max-height: 150px;
+        border-radius: 6px;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+    }
+</style>
+
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h4 class="mb-0">Create Event</h4>
-                <p class="text-muted mb-0">Add a new event to the system</p>
+                <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create New Event</h4>
+                <p class="text-muted mb-0">Fill in the details to create a new event</p>
             </div>
             <a href="@Url.Action("Index", "Event")" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Back to List
@@ -19,31 +116,29 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
-        <div class="admin-card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Event Information</h5>
-            </div>
-            <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
-                    @Html.AntiForgeryToken()
+    <div class="col-12">
+        <div class="event-form-container">
+            <form method="post" enctype="multipart/form-data" id="eventForm">
+                @Html.AntiForgeryToken()
 
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label">Event Name <span class="text-danger">*</span></label>
-                        <input asp-for="Name" class="form-control" required>
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Description</label>
-                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <h5 class="form-section-title">
+                        <i class="fas fa-info-circle"></i>Basic Information
+                    </h5>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Type" class="form-label">Type</label>
-                            <input asp-for="Type" class="form-control">
+                            <label asp-for="Name" class="form-label">
+                                Event Name <span class="required-badge">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g., Ahmed & Fatima Wedding" required>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Type" class="form-label">Event Type</label>
+                            <input asp-for="Type" class="form-control" placeholder="e.g., Wedding, Engagement, Birthday">
                             <span asp-validation-for="Type" class="text-danger"></span>
                         </div>
                     </div>
@@ -51,40 +146,232 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label asp-for="CategoryId" class="form-label">Category</label>
-                            @Html.DropDownList("CategoryId", ViewData["Categories"] as SelectList, "Select Category", new { @class = "form-control" })
+                            @Html.DropDownList("CategoryId", ViewData["Categories"] as SelectList, "Select Category", new { @class = "form-select" })
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
+
                         <div class="col-md-6 mb-3">
-                            <label asp-for="CityId" class="form-label">City</label>
-                            @Html.DropDownList("CityId", ViewData["Cities"] as SelectList, "Select City", new { @class = "form-control" })
-                            <span asp-validation-for="CityId" class="text-danger"></span>
+                            <label asp-for="UserId" class="form-label">
+                                <i class="fas fa-user me-1"></i>Assign to Client
+                            </label>
+                            @Html.DropDownList("UserId", ViewData["Users"] as SelectList, "Select Client (Optional)", new { @class = "form-select" })
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                            <small class="form-text text-muted">Assign this event to a specific client</small>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="invitationImage" class="form-label">Invitation Background Image</label>
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Brief description of the event..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Event Details Section -->
+                <div class="form-section">
+                    <h5 class="form-section-title">
+                        <i class="fas fa-heart"></i>Event Details
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Bridegroom" class="form-label">
+                                <i class="fas fa-male me-1"></i>Bridegroom Name (Male)
+                            </label>
+                            <input asp-for="Bridegroom" class="form-control" placeholder="Enter bridegroom name">
+                            <span asp-validation-for="Bridegroom" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Bride" class="form-label">
+                                <i class="fas fa-female me-1"></i>Bride Name (Female)
+                            </label>
+                            <input asp-for="Bride" class="form-control" placeholder="Enter bride name">
+                            <span asp-validation-for="Bride" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="MessageTitle" class="form-label">Message Title</label>
+                            <input asp-for="MessageTitle" class="form-control" placeholder="e.g., You're Invited!">
+                            <span asp-validation-for="MessageTitle" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="SystemTitle" class="form-label">System Title</label>
+                            <input asp-for="SystemTitle" class="form-control" placeholder="Internal system title">
+                            <span asp-validation-for="SystemTitle" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location & Time Section -->
+                <div class="form-section">
+                    <h5 class="form-section-title">
+                        <i class="fas fa-map-marker-alt"></i>Location & Time
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CityId" class="form-label">City</label>
+                            @Html.DropDownList("CityId", ViewData["Cities"] as SelectList, "Select City", new { @class = "form-select" })
+                            <span asp-validation-for="CityId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Venue" class="form-label">Venue Name</label>
+                            <input asp-for="Venue" class="form-control" placeholder="e.g., Grand Hotel">
+                            <span asp-validation-for="Venue" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="HallName" class="form-label">Hall Name</label>
+                            <input asp-for="HallName" class="form-control" placeholder="e.g., Crystal Hall">
+                            <span asp-validation-for="HallName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Location" class="form-label">Full Address</label>
+                            <input asp-for="Location" class="form-control" placeholder="Street address">
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Location Map</label>
+                        <div id="map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid #dee2e6;"></div>
+                        <small class="form-text text-muted">Click on the map to set the event location</small>
+                        <input type="hidden" id="Latitude" name="Latitude" />
+                        <input type="hidden" id="Longitude" name="Longitude" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="StartDate" class="form-label">Start Date</label>
+                            <input asp-for="StartDate" type="datetime-local" class="form-control">
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EndDate" class="form-label">End Date</label>
+                            <input asp-for="EndDate" type="datetime-local" class="form-control">
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AttendTime" class="form-label">Attendance Time</label>
+                            <input asp-for="AttendTime" type="time" class="form-control">
+                            <span asp-validation-for="AttendTime" class="text-danger"></span>
+                            <small class="form-text text-muted">When should guests arrive?</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LeaveTime" class="form-label">Departure Time</label>
+                            <input asp-for="LeaveTime" type="time" class="form-control">
+                            <span asp-validation-for="LeaveTime" class="text-danger"></span>
+                            <small class="form-text text-muted">Expected event end time</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Section -->
+                <div class="form-section">
+                    <h5 class="form-section-title">
+                        <i class="fas fa-image"></i>Invitation Media
+                    </h5>
+
+                    <div class="mb-3">
+                        <label for="templateFile" class="form-label">
+                            <i class="fas fa-file-powerpoint me-1"></i>Upload Template (PowerPoint, Word, or PDF)
+                        </label>
+                        <input type="file" class="form-control" id="templateFile" name="templateFile" accept=".pptx,.docx,.pdf">
+                        <span class="text-danger" id="templateValidation"></span>
+                        @Html.ValidationMessage("templateFile", "", new { @class = "text-danger" })
+                        <small class="form-text text-muted d-block mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Upload a template containing "male" and "female" placeholders (Max 10MB).
+                            These will be replaced with bridegroom and bride names and converted to PNG.
+                            <strong>Note:</strong> Requires both bridegroom and bride names.
+                        </small>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Pro Tip:</strong> Use a template file when you want to personalize invitations with names.
+                        The system will automatically replace placeholder text and generate a PNG image.
+                    </div>
+
+                    <div class="text-center my-3">
+                        <span class="text-muted">--- OR ---</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="invitationImage" class="form-label">
+                            <i class="fas fa-file-image me-1"></i>Upload Invitation Image Directly
+                        </label>
                         <input type="file" class="form-control" id="invitationImage" name="invitationImage" accept=".jpg,.jpeg,.png,.webp">
                         <span class="text-danger" id="imageValidation"></span>
                         @Html.ValidationMessage("invitationImage", "", new { @class = "text-danger" })
-                        <small class="form-text text-muted d-block">Upload the background invitation image (Max 5MB). QR codes will be added to this image when creating guests.</small>
+                        <small class="form-text text-muted d-block mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Upload a ready-made invitation image (Max 5MB). QR codes will be added when creating guests.
+                        </small>
                     </div>
+                </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-admin">
-                            <i class="fas fa-save me-2"></i>Create Event
-                        </button>
-                        <a href="@Url.Action("Index", "Event")" class="btn btn-outline-secondary">Cancel</a>
-                    </div>
-                </form>
-            </div>
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="@Url.Action("Index", "Event")" class="btn btn-outline-secondary px-4">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-admin btn-submit px-4">
+                        <i class="fas fa-save me-2"></i>Create Event
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
     <script>
         $(document).ready(function () {
+            // Template file validation
+            $('#templateFile').on('change', function () {
+                const file = this.files[0];
+                const validationSpan = $('#templateValidation');
+                validationSpan.text('');
+
+                if (file) {
+                    const fileSize = file.size / 1024 / 1024; // MB
+                    const allowedExtensions = /(\.pptx|\.docx|\.pdf)$/i;
+
+                    if (!allowedExtensions.exec(file.name)) {
+                        validationSpan.text('Invalid file type. Allowed: .pptx, .docx, .pdf');
+                        this.value = '';
+                        return false;
+                    }
+
+                    if (fileSize > 10) {
+                        validationSpan.text('File size exceeds 10MB limit.');
+                        this.value = '';
+                        return false;
+                    }
+
+                    // Disable invitation image when template is selected
+                    $('#invitationImage').prop('disabled', true);
+                } else {
+                    $('#invitationImage').prop('disabled', false);
+                }
+            });
+
+            // Image file validation
             $('#invitationImage').on('change', function () {
                 const file = this.files[0];
                 const validationSpan = $('#imageValidation');
@@ -95,18 +382,94 @@
                     const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
 
                     if (!allowedExtensions.exec(file.name)) {
-                        validationSpan.text('Invalid file type. Allowed types: .jpg, .jpeg, .png, .webp');
+                        validationSpan.text('Invalid file type. Allowed: .jpg, .jpeg, .png, .webp');
                         this.value = '';
                         return false;
                     }
 
                     if (fileSize > 5) {
-                        validationSpan.text('File size exceeds the limit of 5MB.');
+                        validationSpan.text('File size exceeds 5MB limit.');
                         this.value = '';
+                        return false;
+                    }
+
+                    // Disable template file when image is selected
+                    $('#templateFile').prop('disabled', true);
+                } else {
+                    $('#templateFile').prop('disabled', false);
+                }
+            });
+
+            // Form validation before submit
+            $('#eventForm').on('submit', function(e) {
+                // Check if template file is selected but names are missing
+                const templateFile = $('#templateFile')[0].files[0];
+                if (templateFile) {
+                    const bridegroom = $('input[name="Bridegroom"]').val();
+                    const bride = $('input[name="Bride"]').val();
+
+                    if (!bridegroom || !bride) {
+                        e.preventDefault();
+                        alert('Please enter both Bridegroom and Bride names when uploading a template file.');
+                        $('input[name="Bridegroom"]').focus();
                         return false;
                     }
                 }
             });
         });
+
+        // Google Maps initialization
+        function initMap() {
+            // Default center (can be changed to user's location or a default city)
+            const defaultCenter = { lat: 24.7136, lng: 46.6753 }; // Riyadh, Saudi Arabia as default
+
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: defaultCenter,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            let marker = null;
+
+            // Add click listener to place marker
+            map.addListener('click', function(event) {
+                placeMarker(event.latLng);
+            });
+
+            function placeMarker(location) {
+                // Remove existing marker
+                if (marker) {
+                    marker.setMap(null);
+                }
+
+                // Create new marker
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    draggable: true
+                });
+
+                // Update hidden inputs
+                document.getElementById('Latitude').value = location.lat();
+                document.getElementById('Longitude').value = location.lng();
+
+                // Add drag listener to update coordinates when marker is moved
+                marker.addListener('dragend', function(event) {
+                    document.getElementById('Latitude').value = event.latLng.lat();
+                    document.getElementById('Longitude').value = event.latLng.lng();
+                });
+            }
+
+            // Try to get user's current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(userLocation);
+                });
+            }
+        }
     </script>
 }

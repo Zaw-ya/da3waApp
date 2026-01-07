@@ -27,5 +27,7 @@ namespace Da3wa.Domain.Entities
 
         [ForeignKey("CityId")]
         public virtual City? City { get; set; }
+
+        public virtual ICollection<Event>? Events { get; set; }
     }
 }

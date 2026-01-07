@@ -542,8 +542,29 @@
     <div class="admin-wrapper">
         <!-- Sidebar -->
         <div class="admin-sidebar" id="adminSidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <a href="@Url.Action("Dashboard", "Home")" class="sidebar-brand">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="brand-text">Da3wa Pro</span>
+                </a>
+            </div>
+
+            <!-- User Profile Section -->
+            <div class="sidebar-user">
+                <div class="d-flex align-items-center">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info ms-3">
+                        <h6 class="mb-0">@User.Identity.Name</h6>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </div>
+
             <!-- Sidebar Menu -->
-            <div class="sidebar-menu" style="padding-top: 24px;">
+            <div class="sidebar-menu">
                 <ul class="nav flex-column">
                     <!-- Main Section -->
                     <li class="nav-item">

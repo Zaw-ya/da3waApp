@@ -24,72 +24,151 @@
     </div>
 </div>
 
-<!-- Stats Cards -->
+<!-- Stats Cards Row 1 -->
 <div class="row mb-4">
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
+        <div class="stat-card" style="border-left-color: #667eea;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted mb-2">Total Events</h6>
                     <h3 class="mb-0">@Model.TotalEvents</h3>
                 </div>
-                <div class="stat-icon bg-primary">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
             </div>
-            <p class="@(Model.EventsThisMonth > 0 ? "text-success" : "text-muted") mb-0">
+            <p class="@(Model.EventsThisMonth > 0 ? "text-success" : "text-muted") mb-0 mt-2">
+                <i class="fas fa-arrow-up"></i>
                 <small>@(Model.EventsThisMonth > 0 ? $"+{Model.EventsThisMonth}" : "0") this month</small>
             </p>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
+        <div class="stat-card" style="border-left-color: #10b981;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="text-muted mb-2">Total Guests</h6>
                     <h3 class="mb-0">@Model.TotalGuests.ToString("N0")</h3>
                 </div>
-                <div class="stat-icon bg-success">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
                     <i class="fas fa-users"></i>
                 </div>
             </div>
-            <p class="@(Model.GuestsThisWeek > 0 ? "text-success" : "text-muted") mb-0">
+            <p class="@(Model.GuestsThisWeek > 0 ? "text-success" : "text-muted") mb-0 mt-2">
+                <i class="fas fa-arrow-up"></i>
                 <small>@(Model.GuestsThisWeek > 0 ? $"+{Model.GuestsThisWeek}" : "0") this week</small>
             </p>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
+        <div class="stat-card" style="border-left-color: #f59e0b;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-muted mb-2">Pending RSVPs</h6>
-                    <h3 class="mb-0">@Model.PendingRSVPs</h3>
+                    <h6 class="text-muted mb-2">Confirmed RSVPs</h6>
+                    <h3 class="mb-0">@Model.ConfirmedRSVPs</h3>
                 </div>
-                <div class="stat-icon bg-warning">
-                    <i class="fas fa-clock"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="fas fa-check-circle"></i>
                 </div>
             </div>
-            <p class="@(Model.PendingRSVPs > 0 ? "text-danger" : "text-success") mb-0">
-                <small>@(Model.PendingRSVPs > 0 ? "Need follow up" : "All confirmed")</small>
+            <p class="@(Model.PendingRSVPs > 0 ? "text-danger" : "text-success") mb-0 mt-2">
+                <i class="fas @(Model.PendingRSVPs > 0 ? "fa-exclamation-circle" : "fa-check")"></i>
+                <small>@Model.PendingRSVPs pending</small>
             </p>
         </div>
     </div>
 
     <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card">
+        <div class="stat-card" style="border-left-color: #3b82f6;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-muted mb-2">Attendance Confirmed</h6>
-                    <h3 class="mb-0">@Model.TotalAttendance</h3>
+                    <h6 class="text-muted mb-2">Attendance Today</h6>
+                    <h3 class="mb-0">@Model.AttendanceToday</h3>
                 </div>
-                <div class="stat-icon bg-info">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
                     <i class="fas fa-user-check"></i>
                 </div>
             </div>
-            <p class="@(Model.AttendanceToday > 0 ? "text-success" : "text-muted") mb-0">
-                <small>@(Model.AttendanceToday > 0 ? $"+{Model.AttendanceToday}" : "0") today</small>
+            <p class="text-muted mb-0 mt-2">
+                <i class="fas fa-users"></i>
+                <small>@Model.TotalAttendance total confirmed</small>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards Row 2 -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card" style="border-left-color: #8b5cf6;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-2">Active Events</h6>
+                    <h3 class="mb-0">@Model.ActiveEvents</h3>
+                </div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+            </div>
+            <p class="text-muted mb-0 mt-2">
+                <i class="fas fa-clock"></i>
+                <small>@Model.UpcomingEvents upcoming</small>
+            </p>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card" style="border-left-color: #ec4899;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-2">Categories</h6>
+                    <h3 class="mb-0">@Model.TotalCategories</h3>
+                </div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                    <i class="fas fa-tags"></i>
+                </div>
+            </div>
+            <p class="text-muted mb-0 mt-2">
+                <i class="fas fa-list"></i>
+                <small>Event categories</small>
+            </p>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card" style="border-left-color: #06b6d4;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-2">Cities</h6>
+                    <h3 class="mb-0">@Model.TotalCities</h3>
+                </div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                    <i class="fas fa-city"></i>
+                </div>
+            </div>
+            <p class="text-muted mb-0 mt-2">
+                <i class="fas fa-map-marker-alt"></i>
+                <small>Available locations</small>
+            </p>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card" style="border-left-color: #14b8a6;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-2">This Month</h6>
+                    <h3 class="mb-0">@Model.EventsThisMonth</h3>
+                </div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #14b8a6, #0d9488);">
+                    <i class="fas fa-calendar-week"></i>
+                </div>
+            </div>
+            <p class="text-success mb-0 mt-2">
+                <i class="fas fa-chart-line"></i>
+                <small>Events created</small>
             </p>
         </div>
     </div>
@@ -260,100 +339,89 @@
         <div class="admin-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Recent Events</h5>
-                <a href="#" class="text-primary">View All</a>
+                <a href="@Url.Action("Index", "Event")" class="text-primary">View All</a>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Event Name</th>
-                                <th>Date</th>
-                                <th>Guests</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="event-icon me-3">
-                                            <i class="fas fa-ring"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">Sarah & Mike Wedding</h6>
-                                            <small class="text-muted">Wedding</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>May 15, 2024</td>
-                                <td>250/300</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-admin">View</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="event-icon me-3">
-                                            <i class="fas fa-briefcase"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">Annual Conference</h6>
-                                            <small class="text-muted">Corporate</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Apr 20, 2024</td>
-                                <td>180/200</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-admin">View</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="event-icon me-3">
-                                            <i class="fas fa-birthday-cake"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">John's Birthday</h6>
-                                            <small class="text-muted">Birthday</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Apr 10, 2024</td>
-                                <td>50/60</td>
-                                <td><span class="badge badge-warning">Pending</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-admin">View</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="event-icon me-3">
-                                            <i class="fas fa-heart"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">Engagement Party</h6>
-                                            <small class="text-muted">Engagement</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Mar 28, 2024</td>
-                                <td>120/150</td>
-                                <td><span class="badge badge-admin">Completed</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-admin">View</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                @if (Model.RecentEvents.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Event Name</th>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var eventItem in Model.RecentEvents)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="event-icon me-3">
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">@eventItem.Name</h6>
+                                                    @if (!string.IsNullOrEmpty(eventItem.Bridegroom) && !string.IsNullOrEmpty(eventItem.Bride))
+                                                    {
+                                                        <small class="text-muted">@eventItem.Bridegroom & @eventItem.Bride</small>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (eventItem.StartDate.HasValue)
+                                            {
+                                                @eventItem.StartDate.Value.ToString("MMM dd, yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Not set</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(eventItem.Location))
+                                            {
+                                                <span>@eventItem.Location</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(eventItem.Type))
+                                            {
+                                                <span class="badge bg-primary">@eventItem.Type</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">General</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Edit", "Event", new { id = eventItem.Id })" class="btn btn-sm btn-outline-admin">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No events created yet</p>
+                        <a href="@Url.Action("Create", "Event")" class="btn btn-admin mt-2">
+                            <i class="fas fa-plus me-2"></i>Create Your First Event
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -361,51 +429,49 @@
     <div class="col-lg-4 mb-4">
         <div class="admin-card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Recent Activity</h5>
+                <h5 class="card-title mb-0">Recent Guests</h5>
             </div>
             <div class="card-body">
-                <div class="activity-timeline">
-                    <div class="activity-item">
-                        <div class="activity-icon bg-primary">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h6>New guest registered</h6>
-                            <p class="text-muted mb-0">John Smith registered for Sarah's Wedding</p>
-                            <small class="text-muted">10 minutes ago</small>
-                        </div>
+                @if (Model.RecentGuests.Any())
+                {
+                    <div class="activity-timeline">
+                        @foreach (var guest in Model.RecentGuests)
+                        {
+                            <div class="activity-item">
+                                <div class="activity-icon @(guest.IsAttending ? "bg-success" : "bg-warning")">
+                                    <i class="fas @(guest.IsAttending ? "fa-user-check" : "fa-user-clock")"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h6>@guest.FullName</h6>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-phone me-1"></i>@(guest.Tel.Any() ? string.Join(", ", guest.Tel) : "No phone")
+                                    </p>
+                                    <small class="text-muted">
+                                        @if (guest.IsAttending)
+                                        {
+                                            <span class="text-success"><i class="fas fa-check-circle"></i> Confirmed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning"><i class="fas fa-clock"></i> Pending</span>
+                                        }
+                                        - @guest.CreatedOn.ToString("MMM dd, yyyy")
+                                    </small>
+                                </div>
+                            </div>
+                        }
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-success">
-                            <i class="fas fa-qrcode"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h6>QR Code scanned</h6>
-                            <p class="text-muted mb-0">QR code scanned 15 times today</p>
-                            <small class="text-muted">1 hour ago</small>
-                        </div>
+                    <div class="text-center mt-3">
+                        <a href="@Url.Action("Index", "Guest")" class="btn btn-sm btn-outline-admin">View All Guests</a>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-info">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h6>Invitation sent</h6>
-                            <p class="text-muted mb-0">50 invitations sent for Annual Conference</p>
-                            <small class="text-muted">3 hours ago</small>
-                        </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No guests yet</p>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon bg-warning">
-                            <i class="fas fa-exclamation-circle"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h6>Event reminder</h6>
-                            <p class="text-muted mb-0">John's Birthday is in 2 days</p>
-                            <small class="text-muted">5 hours ago</small>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>
@@ -417,59 +483,86 @@
         <div class="admin-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Upcoming Events</h5>
-                <a href="#" class="text-primary">View Calendar</a>
+                <a href="@Url.Action("Index", "Event")" class="text-primary">View All</a>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <div class="upcoming-event-card">
-                            <div class="event-date bg-primary text-white">
-                                <div class="day">15</div>
-                                <div class="month">MAY</div>
+                @if (Model.UpcomingEventsList.Any())
+                {
+                    <div class="row">
+                        @{
+                            var colors = new[] { "primary", "success", "info", "warning", "purple", "pink" };
+                            var colorIndex = 0;
+                        }
+                        @foreach (var upcomingEvent in Model.UpcomingEventsList)
+                        {
+                            var color = colors[colorIndex % colors.Length];
+                            colorIndex++;
+
+                            <div class="col-md-4 mb-3">
+                                <div class="upcoming-event-card">
+                                    @if (upcomingEvent.StartDate.HasValue)
+                                    {
+                                        <div class="event-date bg-@color text-white">
+                                            <div class="day">@upcomingEvent.StartDate.Value.Day</div>
+                                            <div class="month">@upcomingEvent.StartDate.Value.ToString("MMM").ToUpper()</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="event-date bg-secondary text-white">
+                                            <div class="day"><i class="fas fa-calendar"></i></div>
+                                            <div class="month">TBD</div>
+                                        </div>
+                                    }
+                                    <div class="event-details">
+                                        <h6>@upcomingEvent.Name</h6>
+                                        @if (upcomingEvent.AttendTime.HasValue)
+                                        {
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-clock me-2"></i>@upcomingEvent.AttendTime.Value.ToString("hh:mm tt")
+                                            </p>
+                                        }
+                                        <p class="text-muted mb-0">
+                                            <i class="fas fa-map-marker-alt me-2"></i>
+                                            @if (!string.IsNullOrEmpty(upcomingEvent.Venue))
+                                            {
+                                                @upcomingEvent.Venue
+                                            }
+                                            else if (!string.IsNullOrEmpty(upcomingEvent.Location))
+                                            {
+                                                @upcomingEvent.Location
+                                            }
+                                            else
+                                            {
+                                                <span>Location not set</span>
+                                            }
+                                        </p>
+                                    </div>
+                                    <div class="event-status">
+                                        @if (!string.IsNullOrEmpty(upcomingEvent.Type))
+                                        {
+                                            <span class="badge bg-@color">@upcomingEvent.Type</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Event</span>
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                            <div class="event-details">
-                                <h6>Sarah & Mike Wedding</h6>
-                                <p class="text-muted mb-2"><i class="fas fa-clock me-2"></i>2:00 PM</p>
-                                <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>Grand Hotel</p>
-                            </div>
-                            <div class="event-status">
-                                <span class="badge badge-success">Confirmed</span>
-                            </div>
-                        </div>
+                        }
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="upcoming-event-card">
-                            <div class="event-date bg-success text-white">
-                                <div class="day">20</div>
-                                <div class="month">APR</div>
-                            </div>
-                            <div class="event-details">
-                                <h6>Annual Conference</h6>
-                                <p class="text-muted mb-2"><i class="fas fa-clock me-2"></i>9:00 AM</p>
-                                <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>Convention Center</p>
-                            </div>
-                            <div class="event-status">
-                                <span class="badge badge-warning">Pending</span>
-                            </div>
-                        </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-plus fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No upcoming events scheduled</p>
+                        <a href="@Url.Action("Create", "Event")" class="btn btn-admin mt-2">
+                            <i class="fas fa-plus me-2"></i>Schedule New Event
+                        </a>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="upcoming-event-card">
-                            <div class="event-date bg-info text-white">
-                                <div class="day">10</div>
-                                <div class="month">APR</div>
-                            </div>
-                            <div class="event-details">
-                                <h6>John's Birthday Party</h6>
-                                <p class="text-muted mb-2"><i class="fas fa-clock me-2"></i>7:00 PM</p>
-                                <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-2"></i>Private Residence</p>
-                            </div>
-                            <div class="event-status">
-                                <span class="badge badge-success">Confirmed</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>

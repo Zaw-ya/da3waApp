@@ -4,10 +4,95 @@
     ViewData["Title"] = "Events";
 }
 
+<style>
+    .event-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .event-placeholder {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .event-info h6 {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+    }
+
+    .event-info small {
+        color: #6c757d;
+    }
+
+    .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .action-buttons .btn {
+        padding: 0.4rem 0.8rem;
+        margin: 0 0.2rem;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .search-box input {
+        padding-left: 40px;
+        border-radius: 8px;
+    }
+
+    .table > :not(caption) > * > * {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .event-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 8px;
+        min-width: 70px;
+    }
+
+    .event-date .day {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--admin-primary);
+    }
+
+    .event-date .month {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+    }
+</style>
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
@@ -16,12 +101,76 @@
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h4 class="mb-0">Events</h4>
-                <p class="text-muted mb-0">Manage events and their details</p>
+                <h4 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Events</h4>
+                <p class="text-muted mb-0">Manage all events and their details</p>
             </div>
             <a href="@Url.Action("Create", "Event")" class="btn btn-admin">
-                <i class="fas fa-plus me-2"></i>Add Event
+                <i class="fas fa-plus me-2"></i>Create New Event
             </a>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Total Events</p>
+                        <h4 class="mb-0">@Model.Count()</h4>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-calendar-alt fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Active Events</p>
+                        <h4 class="mb-0">@Model.Count(e => !e.IsDeleted)</h4>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Upcoming</p>
+                        <h4 class="mb-0">@Model.Count(e => e.StartDate.HasValue && e.StartDate.Value >= DateTime.Now)</h4>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-clock fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="admin-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Deleted</p>
+                        <h4 class="mb-0">@Model.Count(e => e.IsDeleted)</h4>
+                    </div>
+                    <div class="ms-3">
+                        <i class="fas fa-trash fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -30,84 +179,175 @@
     <div class="col-12">
         <div class="admin-card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Events List</h5>
-                <div class="ms-auto" style="min-width: 250px;">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" id="eventSearch" class="form-control border-start-0 ps-0" placeholder="Search events...">
-                    </div>
+                <h5 class="card-title mb-0"><i class="fas fa-list me-2"></i>All Events</h5>
+                <div class="search-box" style="min-width: 300px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="eventSearch" class="form-control" placeholder="Search by name, type, city...">
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="eventTable">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>City</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Created On</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var @event in Model)
-                            {
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="eventTable">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(@event.ImagePath))
-                                        {
-                                            <img src="@Url.Content(@event.ImagePath)" alt="Event" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
-                                        }
-                                        else
-                                        {
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                <i class="fas fa-image text-muted"></i>
-                                            </div>
-                                        }
-                                    </td>
-                                    <td>@(@event.Name ?? "N/A")</td>
-                                    <td>@(@event.Category?.Name ?? "N/A")</td>
-                                    <td>@(@event.City?.CityName ?? "N/A")</td>
-                                    <td>@(@event.Type ?? "N/A")</td>
-                                    <td>
-                                        @if (@event.IsDeleted)
-                                        {
-                                            <span class="badge bg-danger">Deleted</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success">Active</span>
-                                        }
-                                    </td>
-                                    <td>@(@event.CreatedOn.ToString("yyyy-MM-dd"))</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="@Url.Action("Details", "Event", new { id = @event.Id })" class="btn btn-sm btn-outline-info">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="@Url.Action("Edit", "Event", new { id = @event.Id })" class="btn btn-sm btn-outline-secondary">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form method="post" action="@Url.Action("DeleteConfirmed", "Event")" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@(@event.Id)" />
-                                                <button type="submit" class="btn btn-sm @(@event.IsDeleted ? "btn-outline-success" : "btn-outline-warning")" onclick="return confirm('Are you sure?')">
-                                                    <i class="fas @(@event.IsDeleted ? "fa-toggle-on" : "fa-toggle-off")"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                    <th>Event</th>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Type</th>
+                                    <th>Client</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach (var @event in Model.OrderByDescending(e => e.CreatedOn))
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(@event.ImagePath))
+                                                {
+                                                    <img src="@Url.Content(@event.ImagePath)" alt="Event" class="event-image me-3">
+                                                }
+                                                else
+                                                {
+                                                    <div class="event-placeholder me-3">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </div>
+                                                }
+                                                <div class="event-info">
+                                                    <h6>@(@event.Name ?? "Untitled Event")</h6>
+                                                    @if (!string.IsNullOrEmpty(@event.Bridegroom) && !string.IsNullOrEmpty(@event.Bride))
+                                                    {
+                                                        <small><i class="fas fa-heart me-1"></i>@(@event.Bridegroom) & @(@event.Bride)</small>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-muted">No couple info</small>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (@event.StartDate.HasValue)
+                                            {
+                                                <div class="event-date">
+                                                    <div class="day">@(@event.StartDate.Value.Day)</div>
+                                                    <div class="month">@(@event.StartDate.Value.ToString("MMM"))</div>
+                                                    <small class="text-muted">@(@event.StartDate.Value.Year)</small>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Not set</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(@event.City?.CityName))
+                                            {
+                                                <div>
+                                                    <i class="fas fa-map-marker-alt me-1 text-primary"></i>
+                                                    <strong>@(@event.City.CityName)</strong>
+                                                </div>
+                                                @if (!string.IsNullOrEmpty(@event.Venue))
+                                                {
+                                                    <small class="text-muted">@(@event.Venue)</small>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(@event.Type))
+                                            {
+                                                <span class="badge bg-primary">@(@event.Type)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">General</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(@event.Category?.Name))
+                                            {
+                                                <br><small class="text-muted">@(@event.Category.Name)</small>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (@event.User != null)
+                                            {
+                                                <div>
+                                                    <i class="fas fa-user me-1 text-success"></i>
+                                                    <strong>@(@event.User.UserName)</strong>
+                                                </div>
+                                                @if (!string.IsNullOrEmpty(@event.User.Email))
+                                                {
+                                                    <small class="text-muted">@(@event.User.Email)</small>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted"><i class="fas fa-user-slash me-1"></i>Not assigned</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (@event.IsDeleted)
+                                            {
+                                                <span class="status-badge bg-danger text-white">
+                                                    <i class="fas fa-trash me-1"></i>Deleted
+                                                </span>
+                                            }
+                                            else if (@event.StartDate.HasValue && @event.StartDate.Value >= DateTime.Now)
+                                            {
+                                                <span class="status-badge bg-success text-white">
+                                                    <i class="fas fa-check-circle me-1"></i>Active
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status-badge bg-secondary text-white">
+                                                    <i class="fas fa-history me-1"></i>Past
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="@Url.Action("Details", "Event", new { id = @event.Id })" class="btn btn-sm btn-info" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="@Url.Action("Edit", "Event", new { id = @event.Id })" class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form method="post" action="@Url.Action("DeleteConfirmed", "Event")" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@(@event.Id)" />
+                                                    <button type="submit" class="btn btn-sm @(@event.IsDeleted ? "btn-success" : "btn-warning")"
+                                                            onclick="return confirm('@(@event.IsDeleted ? "Restore" : "Delete") this event?')"
+                                                            title="@(@event.IsDeleted ? "Restore" : "Delete")">
+                                                        <i class="fas @(@event.IsDeleted ? "fa-undo" : "fa-trash-alt")"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">No events found</h5>
+                        <p class="text-muted">Create your first event to get started</p>
+                        <a href="@Url.Action("Create", "Event")" class="btn btn-admin mt-3">
+                            <i class="fas fa-plus me-2"></i>Create Event
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -116,12 +356,18 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // Search functionality
             $("#eventSearch").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
                 $("#eventTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 });
             });
+
+            // Auto-dismiss success message after 5 seconds
+            setTimeout(function() {
+                $(".alert-success").fadeOut('slow');
+            }, 5000);
         });
     </script>
 }
