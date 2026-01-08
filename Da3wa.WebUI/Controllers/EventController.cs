@@ -175,7 +175,7 @@ namespace Da3wa.WebUI.Controllers
                     {
                         await _eventService.CreateAsync(@event);
                         TempData["SuccessMessage"] = "Event created successfully!";
-                        return RedirectToAction(nameof(Index));
+                        return RedirectToAction("Dashboard", "Home");
                     }
                     catch (Exception ex)
                     {

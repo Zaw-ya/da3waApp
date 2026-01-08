@@ -47,7 +47,7 @@ namespace Da3wa.WebUI.Controllers
             var createdById = User.Identity?.Name;
             var userDto = await _authService.CreateUserAsync(createUserDto, createdById);
             TempData["Success"] = $"User '{userDto.Email}' created successfully.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Dashboard","Home");
         }
 
         // GET: Auth/Edit/5
